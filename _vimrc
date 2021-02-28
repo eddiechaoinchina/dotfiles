@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/2/25 22:05:28 +0800
+" Last Change: 2021/2/28 11:11:33 +0800
 " Brief: My _vimrc File
 
 " Variables ------------------------------------- {{{
@@ -25,7 +25,7 @@ let g:markdown_folding=1
 " Also pairs that need an indent after hitting return, achieved with function
 " BetterCR().
 let g:bs_couples = ['(#)', '[#]', '{#}', '<#>', '"#"', "'#'", '`#`']
-let g:cr_couples = ['>#<', '[#]', '{#}']
+let g:cr_couples = ['>#<', '[#]', '{#}', '`#`']
 
 " Leader keys
 let mapleader = ","
@@ -61,6 +61,7 @@ let g:formatters_less = ['prettier']
 let g:formatters_json = ['prettier']
 
 noremap <F3> :Autoformat<cr>
+inoremap <F3> <esc>:Autoformat<cr>
 
 aug clangformat
     au!
@@ -123,6 +124,12 @@ let g:polyglot_disabled = ['autoindent']
 
 " }}}
 
+" Tabular ------------------ {{{
+
+noremap ;a :Tabularize /=<cr>
+
+" }}}
+
 " Tern --------------------- {{{
 
 aug tern_config
@@ -149,15 +156,16 @@ aug end
 "
 " Install "Pathogen" first. Bundles I use:
 "
-" -----------------------------------------------
-" ack          | faster searching tool    | ,a
-" autoformat   | formatting tool          | <f3>
-" ctrl-p       | fuzzy file finder        | ,,
-" emmet        | html expand abbreviation | <c-e>
-" nerdtree     | tree file explorer       | <f2>
-" polyglot     | syntax highlighting      |
-" tern         | js completion            | <f4>
-" -----------------------------------------------
+" --------------------------------------------
+" ack          | faster searching      | ,a
+" autoformat   | formatting tool       | <f3>
+" ctrl-p       | fuzzy file finder     | ,,
+" emmet        | html,css abbrevs      | <c-e>
+" nerdtree     | tree file explorer    | <f2>
+" polyglot     | syntax highlighting   |
+" tabular      | align things          | ;a
+" tern         | js completion         | <f4>
+" --------------------------------------------
 "
 " Be sure to have "node" installed and run "npm install" inside "tern" folder.
 "
@@ -173,9 +181,10 @@ aug end
 " directory.
 "
 " TODO
-"   0. "match it"
-"   1. Markdown generate toc
-"   2. JS function description
+"   1. "Show diff" in a split.
+"   2. "Supertab"
+"   3. "Fugitive", "Gitgutter"
+"   4. "coc.nvim"
 
 filetype off
 call pathogen#infect()
@@ -289,10 +298,11 @@ hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
 
 iab mymail nerdzzh@gmail.com
 iab myname Will Chao
-iab <expr> dts strftime("%x %X %z")
 iab waht   what
 iab teh    the
 iab tehn   then
+
+iab <expr> dts strftime("%x %X %z")
 
 " }}}
 
@@ -344,7 +354,7 @@ nnoremap <leader>wt <c-w>T
 
 " Moving and jumping {{{
 
-" Move to the beginning/end of line
+" Move to the beginning/end of line.
 nnoremap H ^
 nnoremap L $
 
@@ -352,10 +362,13 @@ nnoremap L $
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
-" Same when jumping around
+" Same when jumping around.
+nnoremap <c-o> <c-o>zz
+nnoremap <c-[> <c-i>zz
+nnoremap <c-]> <c-]>zz
+nnoremap <c-\> <c-w>v<c-]>zz
 nnoremap g; g;zz
 nnoremap g, g,zz
-nnoremap <c-o> <c-o>zz
 
 " }}}
 
@@ -372,11 +385,24 @@ nnoremap <leader>n :set number!<cr>
 
 " }}}
 
-" It's a good habit to stop using arrow keys.
-nnoremap <left> <nop>
+" Formatting {{{
+
+" Easier linewise reselection of what you just pasted.
+nnoremap <leader>V V`]
+
+" Indent/dedent/autoindent what you just pasted.
+nnoremap =- V`]=
+
+" Reformat line. I never use l as a macro register anyway.
+nnoremap ql gqq
+
+" }}}
+
+" It's good practice to stop using arrow keys.
+nnoremap <left>  <nop>
 nnoremap <right> <nop>
-nnoremap <up> <nop>
-nnoremap <down> <nop>
+nnoremap <up>    <nop>
+nnoremap <down>  <nop>
 
 " Buffer mappings
 nnoremap <leader>bn :bn<cr>
@@ -403,10 +429,10 @@ nnoremap <leader>ws :w<cr>:so %<cr>
 nnoremap <leader>ev :vsp ~\_vimrc<cr>
 nnoremap <silent> <leader>sv :so ~\_vimrc<cr>:noh<cr>
 
-" Capitalize a word
+" Capitalize a word.
 nnoremap <c-u> mzgUiw`z
 
-" Enclose a word
+" Enclose a word.
 nnoremap <leader>" mzviw<esc>a"<esc>bi"<esc>`z
 nnoremap <leader>' mzviw<esc>a'<esc>bi'<esc>`z
 nnoremap <leader>( mzviw<esc>a)<esc>bi(<esc>`z
@@ -416,19 +442,11 @@ nnoremap <leader>[ mzviw<esc>a]<esc>bi[<esc>`z
 " Enter visual block mode
 nnoremap <leader>v <c-q>
 
-" Clipboard manipulation
-nnoremap <leader>y "+y
-nnoremap <leader>p "+p
-nnoremap <leader>d "+d
-
-" No search highlighting
-nnoremap <silent> <leader><space> :noh<cr>:call clearmatches()<cr>
-
 " Select all
 nnoremap <leader>sa ggVG
 
-" Indent all
-nnoremap <leader>ia gg=G
+" No search highlighting
+nnoremap <silent> <leader><space> :noh<cr>:call clearmatches()<cr>
 
 " Show unsaved diff
 nnoremap <leader>sd :w !diff % -<cr>
@@ -436,28 +454,11 @@ nnoremap <leader>sd :w !diff % -<cr>
 " Clean trailing whitespaces
 nnoremap <silent> <leader>W mz:let _s=@/<cr>:%s/\s\+$//e<cr>:noh<cr>:let @/=_s<cr>`z
 
-" Formatting
-nnoremap ql gqq
-
 " }}}
 
 " Insert mode -------------- {{{
 
-" Exit insert mode
-inoremap jk <esc>
-
-" Paste
-inoremap <c-v> <esc>"+pa
-
-" Capitalize a word
-inoremap <c-u> <esc>mzgUiw`za
-
-" Pairing
-inoremap " ""<left>
-inoremap ' ''<left>
-inoremap ( ()<left>
-inoremap [ []<left>
-inoremap { {}<left>
+" Better keys {{{
 
 " Delete a pair of brackets
 inoremap <silent> <bs> <c-r>=BetterBS()<cr>
@@ -470,34 +471,55 @@ inoremap <silent> <tab> <c-r>=BetterTab()<cr>
 
 " }}}
 
+" Exit insert mode
+inoremap jk <esc>
+
+" Pairing
+inoremap " ""<left>
+inoremap ' ''<left>
+inoremap ( ()<left>
+inoremap [ []<left>
+inoremap { {}<left>
+
+" Paste from clipboard.
+inoremap <c-p> <esc>"+pa
+
+" Capitalize a word.
+inoremap <c-u> <esc>mzgUiw`za
+
+" Move current line to the middle of the window.
+inoremap <c-n> 1<esc>zza<bs>
+
+" }}}
+
 " Visual mode -------------- {{{
 
-" To the last non-blank character of the line
+" Clipboard manipulation.
+vnoremap <leader>y "+y
+vnoremap <leader>d "+d
+
+" To the last non-blank character of the line.
 vnoremap L g_
 
-" Enclose selection
+" Enclose selection.
 vnoremap <leader>" <esc>`>a"<esc>`<i"<esc>`>
 vnoremap <leader>' <esc>`>a'<esc>`<i'<esc>`>
 vnoremap <leader>( <esc>`>a)<esc>`<i(<esc>`>
 vnoremap <leader>` <esc>`>a`<esc>`<i`<esc>`>
 vnoremap <leader>[ <esc>`>a]<esc>`<i[<esc>`>
 
-" Clipboard manipulation
-vnoremap <leader>y "+y
-vnoremap <leader>d "+d
-
-" Deal with a delay when exiting visual mode
-vnoremap <esc> <c-c>
-
-" Search for selection
+" Search selection.
 vnoremap // y/\m<c-r>=escape(@",'/\')<cr><cr>
 
-" Formatting
+" Format selection.
 vnoremap Q gq
+
+" Deal with a delay when exiting visual mode.
+vnoremap <esc> <c-c>
 
 " }}}
 
-" Command line mode -------- {{{
+" Command-line mode -------- {{{
 
 " Pairing
 cnoremap " ""<left>
@@ -516,17 +538,20 @@ cnoremap { {}<left>
 onoremap H ^
 onoremap L $
 
-" Inside parentheses
+" Inside [p]arentheses
 onoremap p i(
 
-" Inside quotes
+" Inside double [q]uotes
 onoremap q i"
 
-" Inside single quotes
+" Inside [s]ingle quotes
 onoremap s i'
 
-" Inside back quotes
+" Inside [b]ack quotes
 onoremap b i`
+
+" Inside cu[r]ly braces
+onoremap r i{
 
 " }}}
 
@@ -536,18 +561,19 @@ onoremap b i`
 
 aug filetype_c
     au!
+    au FileType c,cpp let b:match_words.= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>'
+
     au FileType c,cpp setl softtabstop=4 shiftwidth=4
     au FileType c,cpp setl foldlevel=1
     au FileType c,cpp setl foldmethod=marker foldmarker={,}
 
-    au FileType c,cpp inorea <buffer> mm int main(int argc, char * argv[]) {<cr><cr><cr><cr>}<up><tab>return 0;<up><up><tab><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> mm int main(int argc, char *argv[]) {<cr><cr><cr><cr>}<up><tab>return 0;<up><up><tab><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> ii #include <%><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> if if (%) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> fi for (int i = 0; i < %; ++i) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> fj for (int j = 0; j < %; ++j) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> ww while (%) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> fd /** Brief: %<cr><cr> Args: <cr><cr>Return: <cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType c,cpp inorea <buffer> fh /** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";h" to add file header.
     au FileType c,cpp nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
@@ -570,8 +596,6 @@ aug filetype_html
     au FileType html setl formatoptions+=l
     au FileType html setl foldmethod=manual
 
-    au FileType html inorea <buffer> fh <!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-
     " Use ";h" to add file header.
     au FileType html nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
@@ -591,8 +615,10 @@ aug end
 
 aug filetype_javascript
     au!
+    au FileType javascript let b:match_words.= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>'
+
     au FileType javascript setl softtabstop=2 shiftwidth=2
-    au FileType javascript setl formatoptions-=ro
+    au FileType javascript setl formatoptions-=o
     au FileType javascript setl foldmethod=marker foldmarker={,}
 
     au FileType javascript inorea <buffer> if if (%) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
@@ -603,9 +629,10 @@ aug filetype_javascript
     au FileType javascript inorea <buffer> fb function(%) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> fc (%) => {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> fe forEach(function(%) {<cr><cr>});<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fd /** Brief: %<cr><cr> Args: <cr><cr>Return: <cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fh /** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> lg console.log("%");<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> lg console.log(%);<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+
+    " Use ";f" to add function description.
+    au FileType javascript nnoremap <buffer> <localleader>f :call JSDocAdd()<cr>
 
     " Use ";h" to add file header.
     au FileType javascript nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
@@ -628,9 +655,9 @@ aug end
 aug filetype_markdown
     au!
     au FileType markdown setl softtabstop=4 shiftwidth=4
-    au FileType markdown setl foldlevel=3
-    au FileType markdown setl formatoptions+=r
     au FileType markdown setl comments=b:*,b:-,b:+,n:>
+    au FileType markdown setl formatoptions+=r
+    au FileType markdown setl foldlevel=3
 
     au FileType markdown inorea <buffer> h1 #
     au FileType markdown inorea <buffer> h2 ##
@@ -638,10 +665,15 @@ aug filetype_markdown
     au FileType markdown inorea <buffer> h4 ####
     au FileType markdown inorea <buffer> h5 #####
     au FileType markdown inorea <buffer> h6 ######
-    au FileType markdown inorea <buffer> fh <!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";h" to add file header.
     au FileType markdown nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+
+    " Use ";t" to generate toc.
+    au FileType markdown nnoremap <buffer> <localleader>t :call <SID>MarkdownTocGenerate()<cr>
+
+    " Use ";u" to update toc.
+    au FileType markdown nnoremap <buffer> <localleader>u :call <SID>MarkdownTocUpdate()<cr>
 
     " Use "ih" and "ah" to move "inside" and "around" heading, thanks Steve.
     au FileType markdown onoremap <buffer> ih :<c-u>execute "norm! ?^#\\{1,6} \r:nohlsearch\rgn\elv$h"<cr>
@@ -653,14 +685,15 @@ aug filetype_markdown
     au FileType markdown nnoremap <buffer> <localleader>i mzviw<esc>a*<esc>bi*<esc>`z
     au FileType markdown vnoremap <buffer> <localleader>i <esc>`>a*<esc>`<i*<esc>`>
 
-    " Map single quotes
+    " Map quotes
     au FileType markdown inoremap <buffer> ' '
-
-    " Map back quotes
     au FileType markdown inoremap <buffer> ` ``<left>
 
     " Fix highlighting
     au FileType markdown silent! call FixMDHL()
+
+    " Auto-update toc on save.
+    au BufWritePre *.{md,markdown} call <SID>MarkdownTocUpdate()
 aug end
 
 " }}}
@@ -669,6 +702,8 @@ aug end
 
 aug filetype_python
     au!
+    au FileType python let b:match_words= '\<if\>:\<elif\>:\<else\:\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>'
+
     au FileType python setl softtabstop=4 shiftwidth=4
     au FileType python setl foldmethod=indent foldnestmax=2 foldlevel=1
 
@@ -679,8 +714,6 @@ aug filetype_python
     au FileType python inorea <buffer> fj for j in range(%):<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType python inorea <buffer> ww while % :<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType python inorea <buffer> fu def %():<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType python inorea <buffer> fd """%<cr><cr>Args:<cr><cr>Return:<c-d><cr><cr>"""<c-d><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType python inorea <buffer> fh # Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 
     " Use ";f" to add function description.
     au FileType python nnoremap <buffer> <localleader>f :let _s=@/<cr>?def<cr>:let @/=_s<cr>o"""%<cr><cr>Args:<cr><cr>Return:<c-d><cr><cr>"""<c-d><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
@@ -717,13 +750,11 @@ aug filetype_vim
     au FileType vim inorea <buffer> ww while %<cr><cr>endwhile<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType vim inorea <buffer> aa aug %<cr>au!<cr><cr>aug end<c-d><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType vim inorea <buffer> fu fu! %()<cr><cr>endfu<up><tab><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType vim inorea <buffer> fd " Brief: %<cr><cr>Args: <cr><cr>Return: <esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType vim inorea <buffer> fh " Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 
-    " Function description
+    " Use ";f" to add function description.
     au FileType vim nnoremap <buffer> <localleader>f :let _s=@/<cr>?fu<cr>:let @/=_s<cr>O" Brief: %<cr><cr>Args: <cr><cr>Return: <esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
-    " File header
+    " Use ";h" to add file header.
     au FileType vim nnoremap <buffer> <localleader>h ggO" Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 
     " Map angle brackets
@@ -737,6 +768,8 @@ aug end
 aug filetype_yaml
     au!
     au FileType yaml setl softtabstop=2 shiftwidth=2
+    au FileType yaml setl formatoptions-=ro
+    au FileType yaml setl foldmethod=indent foldnestmax=2
 
     " Use ";h" to add file header.
     au FileType yaml nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
@@ -939,24 +972,18 @@ endfu "}}}
 
 " Utils -------------------- {{{
 
-" Brief: Used for eating white char after typing abbrev. Provided by manual.
-"
-" Return: Empty string if it's a white char. Otherwise it won't be changed.
+" Brief: Eat next white character when typing abbreviation.
 fu! EatNextWhiteChar() "{{{
     let c = nr2char(getchar(0))
     return c =~# '\s' ? '' : c
 endfu "}}}
 
-" Brief: Calculate tab numbers of given line.
-"
-" Args: Line number. (e.g. line("."))
-"
-" Return: Tab numbers of the line.
+" Brief: Return tab numbers of given line.
 fu! TabNumber(lnum) "{{{
     return indent(a:lnum) / &shiftwidth
 endfu "}}}
 
-" Brief: Quit if this window is the last one.
+" Brief: Quit if current window is the last one.
 fu! s:MyLastWindow() "{{{
     if &ft=='jsresult' || &ft=='pythonresult' || &ft=='clangresult'
         if winnr('$') == 1
@@ -967,10 +994,94 @@ endfu "}}}
 
 " }}}
 
-" Brief:
-"   If buffer is modified, update any "Last Change: " occurrences in the first
-"   20 lines. "Last Change: " can have up to 10 char before it.  Restore cursor
-"   position with save_cursor variable.
+" Markdown Toc "{{{
+
+" Brief: Generate table of contents if does't exist.
+fu! s:MarkdwonTocGenerate() "{{{
+    let l:winview = winsaveview()
+    keepjumps norm! gg0
+
+    if search('<!-- TOC START -->', 'Wc') != 0
+        call winrestview(l:winview)
+        return
+    endif
+
+    let l:headingLineRegex = '\m^#\{1,6}'
+
+    let l:headingLines  = []
+    let l:headingLevels = []
+    let l:headingNames  = []
+    let l:headingLinks  = []
+
+    while search(l:headingLineRegex, 'W') != 0
+        call add(l:headingLines, getline('.'))
+    endwhile
+
+    for l:headingLine in l:headingLines
+        call add(l:headingLevels, match(l:headingLine, '[^#]'))
+    endfor
+
+    for l:headingLine in l:headingLines
+        let l:headingName = substitute(l:headingLine, '^#\+\s\+', '', '')
+        let l:headingName = substitute(l:headingName, '\s\+#\+$', '', '')
+        let l:headingName = substitute(l:headingName, '\[\([^\[\]]*\)\]([^()]*)', '\1', 'g')
+        let l:headingName = substitute(l:headingName, '\[\([^\[\]]*\)\]\[[^\[\]]*\]', '\1', 'g')
+
+        call add(l:headingNames, l:headingName)
+        call add(l:headingLevels, match(l:headingLine, '[^#]'))
+    endfor
+
+    for l:headingName in l:headingNames
+        let l:headingLink = tr(l:headingName, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')
+        let l:headingLink = substitute(l:headingLink, "\\%#=0[^[:alnum:]\u00C0-\u00FF\u0400-\u04ff\u4e00-\u9fbf\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF _-]", "", "g")
+        let l:headingLink = substitute(l:headingLink, ' ', '-', 'g')
+
+        call add(l:headingLinks, l:headingLink)
+    endfor
+
+    call winrestview(l:winview)
+
+    silent put ='<!-- TOC START -->'
+    silent put =''
+
+    let i = 0
+    for l:headingLine in l:headingLines
+        let l:heading = ''
+        let l:heading .= repeat(' ', (l:headingLevels[i] - min(l:headingLevels)) * &shiftwidth)
+        let l:heading .= '- '
+        let l:heading .= '[' . l:headingNames[i] . ']'
+        let l:heading .= '(#' . l:headingLinks[i] . ')'
+
+        silent put =l:heading
+        let i += 1
+    endfor
+
+    silent put =''
+    silent put ='<!-- TOC END -->'
+endfu "}}}
+
+" Brief: Update existing table of contents if exists.
+fu! s:MarkdownTocUpdate() "{{{
+    let l:winview = winsaveview()
+    keepjumps norm! gg0
+
+    if search('<!-- TOC START -->', 'Wc') != 0
+        let l:beginLineNum = line('.')
+        if search('<!-- TOC END -->', 'W') != 0
+            let l:endLineNum = line('.')
+            silent exe l:beginLineNum . ',' . l:endLineNum . 'delete_'
+
+            call cursor(l:beginLineNum -1, 1)
+            call <SID>TocGenerate()
+        endif
+    endif
+
+    call winrestview(l:winview)
+endfu "}}}
+
+" }}}
+
+" Brief: If modified, update any "Last Change" occurrences in first 20 lines.
 fu! UpdateTimestamps() "{{{
     if &modified
         " Save cursor position.
@@ -994,7 +1105,7 @@ fu! UpdateTimestamps() "{{{
     endif
 endfu "}}}
 
-" Brief: Fix markdown highlighting on bold & italics.
+" Brief: Fix markdown highlighting with **.
 fu! FixMDHL() "{{{
     " From $VIMRUNTIME/syntax/markdown.vim.
     let s:concealends = ''
@@ -1014,6 +1125,46 @@ fu! FixMDHL() "{{{
     hi def link markdownBoldDelimiter         markdownBold
     hi def link markdownBoldItalic            htmlBoldItalic
     hi def link markdownBoldItalicDelimiter   markdownBoldItalic
+endfu "}}}
+
+" Brief: Generate JSDoc-like function description. Thanks Joe.
+fu! JSDocAdd() "{{{
+    let l:pat1 = 'function \([a-zA-Z]*\)\s*(\s*\(.*\)\s*).*'
+    let l:pat2 = '\S*\s*\([a-zA-Z]*\)\s*[:=]\s*function\s*(\s*\(.*\)\s*).*'
+    let l:pat3 = '\S*\s*\([a-zA-Z]*\)\s*[:=]\s*(\s*\(.*\)\s*)\s*=>.*'
+
+    let l:line = getline('.')
+    let l:indent = indent('.')
+    let l:space = repeat(" ", l:indent)
+
+    let l:flag = 1
+    if l:line =~ l:pat1
+        let l:regex = l:pat1
+    elseif l:line =~ l:pat2
+        let l:regex = l:pat2
+    elseif l:line =~ l:pat3
+        let l:regex = l:pat3
+    else
+        let l:flag = 0
+    endif
+
+    if l:flag
+        let l:lines = []
+        let l:desc = input('Description: ')
+        let l:funcName = substitute(l:line, l:regex, '\1', "g")
+        call add(l:lines, l:space. '/**')
+        call add(l:lines, l:space . ' * ' . l:funcName .'() ' . l:desc)
+        let l:arg = substitute(l:line, l:regex, '\2', "g")
+        let l:args = split(l:arg, '\s*,\s*')
+        call add(l:lines, l:space . ' *')
+        for l:arg in l:args
+            call add(l:lines, l:space . ' * @param {...} ' . l:arg . " -")
+        endfor
+        call add(l:lines, l:space . ' *')
+        call add(l:lines, l:space . ' * @return {...}')
+        call add(l:lines, l:space . ' */')
+        call append(line('.')-1, l:lines)
+    endif
 endfu "}}}
 
 " }}}
