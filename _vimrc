@@ -1,17 +1,91 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/2/28 11:11:33 +0800
+" Last Change: 2021/3/3 20:28:34 +0800
 " Brief: My _vimrc File
+
+" Preamble -------------------------------------- {{{
+
+" Make sure "node", "python", "gcc" are installed to make certain mappings work
+" properly. The version and bits of "python" must be compatible with "vim". When
+" this script is written, a possible solution would be "anaconda3-5.3.0" and
+" "gvim-8.1.2424".
+"
+" Plugins are installed under "~/.vim/bundle" or "~\vimfiles\bundle". Pathogen
+" makes it real easy and quick. Just clone the plugin repo and run ":Helptags"
+" and it is done. Some plugins may require more steps.
+"
+" Some plugin-related variables need to be set before the plugin is loaded, so
+" they better be placed earlier in this file.
+"
+" It is better to use one plugin for one functionality only, such as one for
+" formatting and another for completion. It is easy to manage this way.
+"
+" Install "Pathogen" first. Bundles I use:
+" --------------------------------------------
+" ack          | faster searching      | ,a
+" autoformat   | formatting tool       | <f3>
+" coc.nvim     | conquer completion    |
+" commentary   | comment stuff out     | ;c
+" ctrl-p       | fuzzy file finder     | ,,
+" emmet        | html,css abbrevs      | <c-e>
+" nerdtree     | tree file explorer    | <f2>
+" polyglot     | syntax highlighting   |
+" supertab     | insert completion     |
+" tabular      | align things          | ;a
+" --------------------------------------------
+"
+" Be sure to install "ack" before cloning. It has a dependency on "Perl". Better
+" experienece with "ag" installed. "ack", "strawberryperl", "ag" can be easily
+" installed via "choco".
+"
+" Both "ctrlp" and "ack" defaults to the directory of current file.
+"
+" Be sure to install "clang-format", "prettier" via "npm", install "autopep8",
+" "pycodestyle" via "pip", install "html-tidy" via "choco" to make "autoformat"
+" work normally. "clang-format" requires a ".clang-format" config file at root
+" directory.
+"
+" Be sure to have "node" installed for using "coc.nvim". Install "coc-json",
+" "coc-marketplace" with ":CocInstall". "coc-extensions" I use:
+" --------------------------------------------
+" coc-css                   | .css,.scss,.less
+" coc-html                  | .html
+" coc-html-css-support      |
+" coc-json                  | .json
+" coc-pyright               | .py
+" coc-tsserver              | .js,.ts
+" --------------------------------------------
+"
+" Filetype-specific abbreviations are put separately in section "Abbreviations"
+" instead of "FileType-specific Settings" cause it seems chunky if it was there.
+"
+" Huge thanks go to @stevelosh and his amazing "learnvimscriptthehardway" book
+" for teaching me to customize this editor and enhance user experienece sooooo
+" much. Best regards.
+
+" }}}
+
+" TODO
+"   0. "coc.nvim" configuration.
+"   1. "Show diff" in a split.
+"   2. "Fugitive", "Gitgutter"
 
 " Variables ------------------------------------- {{{
 
-" Define OS variable using feature detection, thanks romainl.
+" Define "g:os" using feature detection, thanks romainl.
 if !exists("g:os")
     if has("win64") || has("win32") || has("win16")
         let g:os = "Windows"
     else
         let g:os = substitute(system('uname'), '\n', '', '')
     endif
+endif
+
+" Just in case it's not by default under home directory.
+if has("win64") || has("win32") || has("win16")
+    let $MYVIMRC = "$HOME/_vimrc"
+else
+    let $MYVIMRC = "$HOME/.vimrc"
 endif
 
 " This enables folding feature for markdown files if you are using the latest
@@ -37,43 +111,79 @@ let maplocalleader = ";"
 
 " Ack ---------------------- {{{
 
+" Ack motions {{{
+
+nnoremap <silent> <leader>A :set opfunc=<SID>AckMotion<cr>g@
+xnoremap <silent> <leader>A :<c-u>call <SID>AckMotion(visualmode())<cr>
+
+fu! s:AckMotion(type) abort
+    let reg_save = @"
+
+    if a:type ==# 'v'
+        silent exe "norm! `<" . a:type . "`>y"
+    elseif a:type ==# 'char'
+        silent exe "norm! `[v`]y"
+    endif
+
+    exe "norm! :Ack! --literal " . shellescape(@") . "\<cr>"
+
+    let @" = reg_save
+endfu
+
+" }}}
+
 " With a "bang", it will not jump to the first result automatically.
 nnoremap <leader>a :Ack!<space>
 
 " Use "ag" as searching tool, better install it first.
-let g:ackprg = 'ag --smart-case --nogroup --nocolor --column'
+let g:ackprg='ag --smart-case --nogroup --nocolor --column'
 
 " }}}
 
 " Autoformat --------------- {{{
 
-let g:formatdef_prettier = '"prettier --stdin-filepath ".expand("%:p").(&textwidth ? " --print-width ".&textwidth : "")." --tab-width ".shiftwidth()." --single-quote"'
+let g:formatdef_prettier='"prettier --stdin-filepath ".expand("%:p").(&textwidth ? " --print-width ".&textwidth : "")." --tab-width ".shiftwidth()." --single-quote"'
 
-let g:formatters_c = ['clangformat']
-let g:formatters_cpp = ['clangformat']
-let g:formatters_python = ['autopep8']
-let g:formatters_html = ['tidy_html']
-let g:formatters_markdown = ['prettier']
+let g:formatters_c          = ['clangformat']
+let g:formatters_cpp        = ['clangformat']
+let g:formatters_python     = ['autopep8']
+let g:formatters_html       = ['tidy_html']
+let g:formatters_markdown   = ['prettier']
 let g:formatters_javascript = ['prettier']
-let g:formatters_css = ['prettier']
-let g:formatters_scss = ['prettier']
-let g:formatters_less = ['prettier']
-let g:formatters_json = ['prettier']
+let g:formatters_css        = ['prettier']
+let g:formatters_scss       = ['prettier']
+let g:formatters_less       = ['prettier']
+let g:formatters_json       = ['prettier']
 
 noremap <F3> :Autoformat<cr>
 inoremap <F3> <esc>:Autoformat<cr>
 
-aug clangformat
+aug ft_jsonc
+    au!
+    au FileType jsonc noremap <buffer> <F3> :Autoformat json<cr>
+    au FileType jsonc inoremap <buffer> <F3> <esc>:Autoformat json<cr>
+aug end
+
+aug ft_clangformat
     au!
     au BufNewFile,BufRead _clang-format,.clang-format setl ft=yaml
 aug end
 
 " }}}
 
+" Coc.nvim ----------------- {{{
+
+nmap <F4> <Plug>(coc-definition)
+imap <F4> <esc><Plug>(coc-definition)
+
+nnoremap <leader>cm :CocList marketplace<cr>
+
+" }}}
+
 " Commentary --------------- {{{
 
-nmap <leader>c <Plug>CommentaryLine
-xmap <leader>c <Plug>Commentary
+nmap ;c <Plug>CommentaryLine
+xmap ;c <Plug>Commentary
 
 " }}}
 
@@ -81,16 +191,15 @@ xmap <leader>c <Plug>Commentary
 
 nnoremap <leader>. :CtrlPTag<cr>
 nnoremap <leader>E :CtrlP ../
-nnoremap <leader>/ :CtrlPQuickfix<cr>
 
-let g:ctrlp_map = '<leader>,'
-let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_map='<leader>,'
+let g:ctrlp_cmd='CtrlP'
 
 " Don't jump to it if already opened, open a new instance instead.
-let g:ctrlp_switch_buffer = 0
+let g:ctrlp_switch_buffer=0
 
-let g:ctrlp_match_window = 'bottom,order:ttb' . ',max:20'
-let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_match_window='bottom,order:ttb' . ',max:20'
+let g:ctrlp_working_path_mode='ra'
 
 " }}}
 
@@ -100,7 +209,7 @@ au FileType html,css,javascript imap <buffer> <c-e> <c-y>,
 au FileType html,css,javascript imap <buffer> <c-s> <c-y>n
 
 let g:user_emmet_mode='i'
-let g:user_emmet_install_global = 0
+let g:user_emmet_install_global=0
 
 au FileType html,css,javascript EmmetInstall
 
@@ -120,7 +229,14 @@ aug end
 
 " Polyglot ----------------- {{{
 
-let g:polyglot_disabled = ['autoindent']
+let g:polyglot_disabled=['autoindent']
+
+" }}}
+
+" Supertab ----------------- {{{
+
+let g:SuperTabDefaultCompletionType='<c-n>'
+let g:SuperTabLongestHighlight=1
 
 " }}}
 
@@ -130,61 +246,7 @@ noremap ;a :Tabularize /=<cr>
 
 " }}}
 
-" Tern --------------------- {{{
-
-aug tern_config
-    au!
-    au BufNewFile,BufRead .tern-project inorea cfg {<cr><cr>}<up><tab>"libs": [<cr><cr>]<up><tab><tab>"browser"<down>,<cr>"plugins": {}<left><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript nnoremap <buffer> <F4> :TernDef<cr>
-aug end
-
 " }}}
-
-" }}}
-
-" Make sure "node", "python", "gcc" are installed to make certain mappings work
-" properly. The version and bits of "python" must be compatible with "vim". When
-" this script is written, a possible solution would be "anaconda3-5.3.0" and
-" "gvim-8.1.2424".
-"
-" Plugins are installed under "~/.vim/bundle" or "~\vimfiles\bundle". Pathogen
-" makes it real easy and quick. Just clone the plugin repo and run ":Helptags"
-" and it is done. Some plugins may require more steps.
-"
-" Some plugin-related variables need to be set before the plugin is loaded, so
-" they better be placed earlier in this file.
-"
-" Install "Pathogen" first. Bundles I use:
-"
-" --------------------------------------------
-" ack          | faster searching      | ,a
-" autoformat   | formatting tool       | <f3>
-" ctrl-p       | fuzzy file finder     | ,,
-" emmet        | html,css abbrevs      | <c-e>
-" nerdtree     | tree file explorer    | <f2>
-" polyglot     | syntax highlighting   |
-" tabular      | align things          | ;a
-" tern         | js completion         | <f4>
-" --------------------------------------------
-"
-" Be sure to have "node" installed and run "npm install" inside "tern" folder.
-"
-" Be sure to install "ack" before cloning. It has a dependency on "Perl". Better
-" experienece with "ag" installed. "ack", "strawberryperl", "ag" can be easily
-" installed via "choco".
-"
-" Both "ctrlp" and "ack" defaults to the directory of current file.
-"
-" Be sure to install "clang-format", "prettier" via "npm", install "autopep8",
-" "pycodestyle" via "pip", install "html-tidy" via "choco" to make "autoformat"
-" work normally. "clang-format" requires a "_clang-format" config file at root
-" directory.
-"
-" TODO
-"   1. "Show diff" in a split.
-"   2. "Supertab"
-"   3. "Fugitive", "Gitgutter"
-"   4. "coc.nvim"
 
 filetype off
 call pathogen#infect()
@@ -197,6 +259,67 @@ silent! unmap [%
 silent! unmap ]%
 
 " Options --------------------------------------- {{{
+
+" Backups ------------------ {{{
+
+set backup                                     " enable backups
+set noswapfile                                 " it's 2021, Vim.
+
+if g:os == "Windows"
+    set undodir  =~\vimfiles\tmp\undo\\        " undo files
+    set backupdir=~\vimfiles\tmp\backup\\      " backups
+    set directory=~\vimfiles\tmp\swap\\        " swap files
+elseif g:os == "Linux"
+    set undodir  =~/.vim/tmp/undo//            " undo files
+    set backupdir=~/.vim/tmp/backup//          " backups
+    set directory=~/.vim/tmp/swap//            " swap files
+endif
+
+" Make those folders automatically if they don't already exist.
+if !isdirectory(expand(&undodir))
+    call mkdir(expand(&undodir), "p")
+endif
+if !isdirectory(expand(&backupdir))
+    call mkdir(expand(&backupdir), "p")
+endif
+if !isdirectory(expand(&directory))
+    call mkdir(expand(&directory), "p")
+endif
+
+" }}}
+
+" Statusline --------------- {{{
+
+set statusline=                                " Thanks Tassos!
+set statusline+=\ %n\                          " buffer number
+set statusline+=%{&ff}                         " file format
+set statusline+=%y                             " file type
+set statusline+=\ %<%F                         " full path
+set statusline+=%1*%m%*                        " modified flag
+set statusline+=%=%5l                          " current line
+set statusline+=/%L                            " total lines
+set statusline+=%4v\                           " virtual column number
+set statusline+=0x%04B\                        " character under cursor
+
+" Use red to mark the modified flag (taken from manual :D)
+hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
+
+" }}}
+
+" Wildmenu ----------------- {{{
+
+set wildmenu
+set wildmode=list:longest
+
+set wildignore+=.git                           " version control
+set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg " binary images
+set wildignore+=*.obj,*.exe,*.dll              " compiled object files
+set wildignore+=*.zip,*.rar,*.7z,*.tar.gz      " compressed files
+set wildignore+=*.deb,*.rpm,*.pkg              " package files
+set wildignore+=*.sw?                          " swap files
+set wildignore+=*.DS_Store                     " mac bullshit
+
+" }}}
 
 set nocompatible
 set encoding=utf-8
@@ -219,6 +342,8 @@ set listchars=tab:▸\ ,trail:⌴
 set complete=.,w,b,u,t
 set hlsearch
 set incsearch
+set ignorecase
+set smartcase
 set showmode
 set showcmd
 set showbreak=↪
@@ -228,73 +353,80 @@ set autoread
 set autowrite
 set formatoptions=qrn1j
 set virtualedit+=block
-set shortmess+=I
+set shortmess+=Ic
 set backspace=indent,eol,start
-
-" Backups ------------------ {{{
-
-set backup                                " enable backups
-set noswapfile                            " it's 2021, Vim.
-
-if g:os == "Windows"
-    set undodir  =~\vimfiles\tmp\undo\\   " undo files
-    set backupdir=~\vimfiles\tmp\backup\\ " backups
-    set directory=~\vimfiles\tmp\swap\\   " swap files
-elseif g:os == "Linux"
-    set undodir  =~/.vim/tmp/undo//       " undo files
-    set backupdir=~/.vim/tmp/backup//     " backups
-    set directory=~/.vim/tmp/swap//       " swap files
-endif
-
-" Make those folders automatically if they don't already exist.
-if !isdirectory(expand(&undodir))
-    call mkdir(expand(&undodir), "p")
-endif
-if !isdirectory(expand(&backupdir))
-    call mkdir(expand(&backupdir), "p")
-endif
-if !isdirectory(expand(&directory))
-    call mkdir(expand(&directory), "p")
-endif
-
-" }}}
-
-" Wildmenu ----------------- {{{
-
-set wildmenu
-set wildmode=list:longest
-
-set wildignore+=.git                           " version control
-set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg " binary images
-set wildignore+=*.obj,*.exe,*.dll              " compiled object files
-set wildignore+=*.zip,*.rar,*.7z,*.tar.gz      " compressed files
-set wildignore+=*.deb,*.rpm,*.pkg              " package files
-set wildignore+=*.sw?                          " swap files
-set wildignore+=*.DS_Store                     " mac bullshit
-
-" }}}
-
-" Statusline --------------- {{{
-
-set statusline=                                " Thanks Tassos!
-set statusline+=\ %n\                          " buffer number
-set statusline+=%{&ff}                         " file format
-set statusline+=%y                             " file type
-set statusline+=\ %<%F                         " full path
-set statusline+=%1*%m%*                        " modified flag
-set statusline+=%=%5l                          " current line
-set statusline+=/%L                            " total lines
-set statusline+=%4v\                           " virtual column number
-set statusline+=0x%04B\                        " character under cursor
-
-" Use red to mark the modified flag (taken from manual :D)
-hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
-
-" }}}
+set scrolloff=3
+set sidescroll=1
+set sidescrolloff=10
 
 " }}}
 
 " Abbreviation ---------------------------------- {{{
+
+" Filetype-specific -------- {{{
+
+" C {{{
+
+aug ft_c_abbrev
+    au!
+    au FileType c,cpp inorea <buffer> mm int main(int argc, char *argv[]) {<cr><cr><cr><cr>}<up><tab>return 0;<up><up><tab><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> ii #include <%><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> if if (%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> fi for (int i = 0; i < %; ++i) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> fj for (int j = 0; j < %; ++j) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> ww while (%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> fd /** Brief: %<cr><cr> Args: <cr><cr>Return: <cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+aug end
+
+" }}}
+
+" Javascript {{{
+
+aug ft_javascript_abbrev
+    au!
+    au FileType javascript inorea <buffer> if if (%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> fi for (let i = 0; i < %; ++i) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> fj for (let j = 0; j < %; ++j) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> ww while (%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> fa function %() {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> fb function(%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> fc (%) => {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> fe forEach(function(%) {<cr><cr>});<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> lg console.log(%);<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+aug end
+
+" }}}
+
+" Python {{{
+
+aug ft_python_abbrev
+    au!
+    au FileType python inorea <buffer> mm def main():<cr>print("Hello World!")<cr><cr>if __name__ == "__main__":<c-d><cr>main()<up><up><up><esc>o<c-r>=EatNextWhiteChar()<cr>
+    au FileType python inorea <buffer> ii import
+    au FileType python inorea <buffer> if if % :<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType python inorea <buffer> fi for i in range(%):<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType python inorea <buffer> fj for j in range(%):<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType python inorea <buffer> ww while % :<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType python inorea <buffer> fu def %():<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+aug end
+
+" }}}
+
+" Vim {{{
+
+aug ft_vim_abbrev
+    au!
+    au FileType vim inorea <buffer> if if %<cr><cr>endif<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType vim inorea <buffer> fi for i in %<cr><cr>endfor<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType vim inorea <buffer> fj for j in %<cr><cr>endfor<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType vim inorea <buffer> ww while %<cr><cr>endwhile<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType vim inorea <buffer> aa aug %<cr>au!<cr><cr>aug end<c-d><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType vim inorea <buffer> fu fu! %()<cr><cr>endfu<up><tab><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+aug end
+
+" }}}
+
+" }}}
 
 iab mymail nerdzzh@gmail.com
 iab myname Will Chao
@@ -312,43 +444,39 @@ iab <expr> dts strftime("%x %X %z")
 
 " Window mappings {{{
 
-" Move between window
+" Move between windows.
 nnoremap <c-h> <c-w><c-h>
 nnoremap <c-j> <c-w><c-j>
 nnoremap <c-k> <c-w><c-k>
 nnoremap <c-l> <c-w><c-l>
 
-" Maximize window
-"
-" Use <leader>mh to maximize height of current window
-" Use <leader>mw to maximize width of current window
-" Use <leader>ma to make all windows equal height and width
+" Maximize [h]eight/[w]idth of current window.
+" Make [a]ll windows equal height and width.
 nnoremap <leader>mh <c-w>_
 nnoremap <leader>mw <c-w><bar>
 nnoremap <leader>ma <c-w>=
 
-" Resize window horizontally & vertically
-nnoremap <leader>- :resize -10<cr>
-nnoremap <leader>+ :resize +10<cr>
-
-nnoremap - :vertical resize -5<cr>
-nnoremap + :vertical resize +5<cr>
-
-" Window relocation
-"
-" Use <leader>wr to rotate all windows counterclockwise
-" Use <leader>wx to exchange current window with its nearest
-" Use <leader>w_ to move window to direction _
-" Use <leader>wt to move current window to a new tab
+" [r]otate all windows counterclockwise.
+" E[x]change current window with its nearest.
 nnoremap <leader>wr <c-w><c-r>
 nnoremap <leader>wx <c-w><c-x>
 
+" Move window to that direction.
 nnoremap <leader>wh <c-w>H
 nnoremap <leader>wj <c-w>J
 nnoremap <leader>wk <c-w>K
 nnoremap <leader>wl <c-w>L
 
+" Move current window to a new [t]ab.
 nnoremap <leader>wt <c-w>T
+
+" Resize window's height.
+nnoremap <leader>- :resize -10<cr>
+nnoremap <leader>+ :resize +10<cr>
+
+" Resize window's width.
+nnoremap - :vertical resize -5<cr>
+nnoremap + :vertical resize +5<cr>
 
 " }}}
 
@@ -364,7 +492,7 @@ nnoremap N Nzzzv
 
 " Same when jumping around.
 nnoremap <c-o> <c-o>zz
-nnoremap <c-[> <c-i>zz
+nnoremap <c-n> <c-i>zz
 nnoremap <c-]> <c-]>zz
 nnoremap <c-\> <c-w>v<c-]>zz
 nnoremap g; g;zz
@@ -374,13 +502,13 @@ nnoremap g, g,zz
 
 " Toggling {{{
 
-" Space to toggle folds
+" Space to toggle folds.
 nnoremap <space> za
 
-" Toggle invisible characters
-nnoremap <leader>l :set list!<cr>
+" [i]nvisible characters.
+nnoremap <leader>i :set list!<cr>
 
-" Toggle line numbers
+" Line [n]umbers.
 nnoremap <leader>n :set number!<cr>
 
 " }}}
@@ -395,6 +523,23 @@ nnoremap =- V`]=
 
 " Reformat line. I never use l as a macro register anyway.
 nnoremap ql gqq
+
+" }}}
+
+" Quick editing {{{
+
+nnoremap <leader>wq :wq<cr>
+nnoremap <leader>ww :w<cr>
+nnoremap <leader>qq :q<cr>
+nnoremap <leader>fq :q!<cr>
+
+nnoremap <leader>ws :w<cr>:so %<cr>
+nnoremap <leader>ss :so %<cr>
+
+nnoremap <silent> <leader>sv :so $MYVIMRC<cr>:noh<cr>
+
+nnoremap <leader>ev :vsp $MYVIMRC<cr>
+nnoremap <leader>ec :vsp<cr>:CocConfig<cr>
 
 " }}}
 
@@ -415,20 +560,6 @@ nnoremap <leader>qo :copen 18<cr>
 nnoremap <leader>qn :cnext<cr>
 nnoremap <leader>qp :cprevious<cr>
 
-" Write and quit
-nnoremap <leader>wq :wq<cr>
-nnoremap <leader>ww :w<cr>
-nnoremap <leader>qq :q<cr>
-nnoremap <leader>fq :q!<cr>
-
-" Quick source
-nnoremap <leader>ss :so %<cr>
-nnoremap <leader>ws :w<cr>:so %<cr>
-
-" Edit and source _vimrc, change it to yours if neccesary.
-nnoremap <leader>ev :vsp ~\_vimrc<cr>
-nnoremap <silent> <leader>sv :so ~\_vimrc<cr>:noh<cr>
-
 " Capitalize a word.
 nnoremap <c-u> mzgUiw`z
 
@@ -439,19 +570,16 @@ nnoremap <leader>( mzviw<esc>a)<esc>bi(<esc>`z
 nnoremap <leader>` mzviw<esc>a`<esc>bi`<esc>`z
 nnoremap <leader>[ mzviw<esc>a]<esc>bi[<esc>`z
 
-" Enter visual block mode
-nnoremap <leader>v <c-q>
-
-" Select all
-nnoremap <leader>sa ggVG
-
-" No search highlighting
-nnoremap <silent> <leader><space> :noh<cr>:call clearmatches()<cr>
-
-" Show unsaved diff
+" Show unsaved diff.
 nnoremap <leader>sd :w !diff % -<cr>
 
-" Clean trailing whitespaces
+" Select entire buffer.
+nnoremap <leader>sa ggVG
+
+" No search highlighting.
+nnoremap <silent> <leader><space> :noh<cr>:call clearmatches()<cr>
+
+" Clean trailing whitespaces.
 nnoremap <silent> <leader>W mz:let _s=@/<cr>:%s/\s\+$//e<cr>:noh<cr>:let @/=_s<cr>`z
 
 " }}}
@@ -461,25 +589,28 @@ nnoremap <silent> <leader>W mz:let _s=@/<cr>:%s/\s\+$//e<cr>:noh<cr>:let @/=_s<c
 " Better keys {{{
 
 " Delete a pair of brackets
-inoremap <silent> <bs> <c-r>=BetterBS()<cr>
+inoremap <silent> <bs> <c-r>=<SID>BetterBS()<cr>
 
 " Auto indent after pressing return
-inoremap <silent> <cr> <c-r>=BetterCR()<cr>
-
-" Better insert completion
-inoremap <silent> <tab> <c-r>=BetterTab()<cr>
+inoremap <silent> <cr> <c-r>=<SID>BetterCR()<cr>
 
 " }}}
 
-" Exit insert mode
+" Exit insert mode.
 inoremap jk <esc>
 
-" Pairing
+" Pairing stuff up.
 inoremap " ""<left>
 inoremap ' ''<left>
 inoremap ( ()<left>
 inoremap [ []<left>
 inoremap { {}<left>
+
+" Filename completion.
+inoremap <c-f> <c-x><c-f>
+
+" Move current line to the middle of the window.
+inoremap <c-n> 1<esc>zza<bs>
 
 " Paste from clipboard.
 inoremap <c-p> <esc>"+pa
@@ -487,12 +618,26 @@ inoremap <c-p> <esc>"+pa
 " Capitalize a word.
 inoremap <c-u> <esc>mzgUiw`za
 
-" Move current line to the middle of the window.
-inoremap <c-n> 1<esc>zza<bs>
-
 " }}}
 
 " Visual mode -------------- {{{
+
+" Selection {{{
+
+" Enclosing a selection
+vnoremap <leader>" <esc>`>a"<esc>`<i"<esc>`>
+vnoremap <leader>' <esc>`>a'<esc>`<i'<esc>`>
+vnoremap <leader>( <esc>`>a)<esc>`<i(<esc>`>
+vnoremap <leader>` <esc>`>a`<esc>`<i`<esc>`>
+vnoremap <leader>[ <esc>`>a]<esc>`<i[<esc>`>
+
+" Searching a selection
+vnoremap // y/\m<c-r>=escape(@",'/\')<cr><cr>
+
+" Formatting a selection
+vnoremap Q gq
+
+" }}}
 
 " Clipboard manipulation.
 vnoremap <leader>y "+y
@@ -501,18 +646,8 @@ vnoremap <leader>d "+d
 " To the last non-blank character of the line.
 vnoremap L g_
 
-" Enclose selection.
-vnoremap <leader>" <esc>`>a"<esc>`<i"<esc>`>
-vnoremap <leader>' <esc>`>a'<esc>`<i'<esc>`>
-vnoremap <leader>( <esc>`>a)<esc>`<i(<esc>`>
-vnoremap <leader>` <esc>`>a`<esc>`<i`<esc>`>
-vnoremap <leader>[ <esc>`>a]<esc>`<i[<esc>`>
-
-" Search selection.
-vnoremap // y/\m<c-r>=escape(@",'/\')<cr><cr>
-
-" Format selection.
-vnoremap Q gq
+" Space to toggle folds.
+vnoremap <space> za
 
 " Deal with a delay when exiting visual mode.
 vnoremap <esc> <c-c>
@@ -521,7 +656,7 @@ vnoremap <esc> <c-c>
 
 " Command-line mode -------- {{{
 
-" Pairing
+" Pairing stuff up.
 cnoremap " ""<left>
 cnoremap ' ''<left>
 cnoremap ( ()<left>
@@ -559,21 +694,13 @@ onoremap r i{
 
 " C ------------------------ {{{
 
-aug filetype_c
+aug ft_c
     au!
-    au FileType c,cpp let b:match_words.= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>'
+    au FileType c,cpp if exists('b:match_words') | let b:match_words.= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | else | let b:match_words= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | endif
 
     au FileType c,cpp setl softtabstop=4 shiftwidth=4
     au FileType c,cpp setl foldlevel=1
     au FileType c,cpp setl foldmethod=marker foldmarker={,}
-
-    au FileType c,cpp inorea <buffer> mm int main(int argc, char *argv[]) {<cr><cr><cr><cr>}<up><tab>return 0;<up><up><tab><c-r>=EatNextWhiteChar()<cr>
-    au FileType c,cpp inorea <buffer> ii #include <%><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType c,cpp inorea <buffer> if if (%) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType c,cpp inorea <buffer> fi for (int i = 0; i < %; ++i) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType c,cpp inorea <buffer> fj for (int j = 0; j < %; ++j) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType c,cpp inorea <buffer> ww while (%) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType c,cpp inorea <buffer> fd /** Brief: %<cr><cr> Args: <cr><cr>Return: <cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";h" to add file header.
     au FileType c,cpp nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
@@ -590,46 +717,46 @@ aug end
 
 " HTML --------------------- {{{
 
-aug filetype_html
+aug ft_html
     au!
     au FileType html setl softtabstop=2 shiftwidth=2
     au FileType html setl formatoptions+=l
     au FileType html setl foldmethod=manual
 
+    au FileType html inoremap <buffer> < <><left>
+
     " Use ";h" to add file header.
     au FileType html nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
-    " Use ";t" to fold current tag.
-    au FileType html nnoremap <buffer> <localleader>t Vatzf
+    " Use ";f" to fold current tag.
+    au FileType html nnoremap <buffer> <localleader>f Vatzf
 
-    " Use ";=" to indent current tag.
-    au FileType html nnoremap <buffer> <localleader>= Vat=
-
-    " Map angle brackets
-    au FileType html inoremap <buffer> < <><left>
+    " Use ";i" to indent current tag.
+    au FileType html nnoremap <buffer> <localleader>i Vat=
 aug end
 
 " }}}
 
-" JavaScript --------------- {{{
+" JSON --------------------- {{{
 
-aug filetype_javascript
+aug ft_json
     au!
-    au FileType javascript let b:match_words.= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>'
+    au FileType json syntax match Comment +\/\/.\+$+
+aug end
+
+" }}}
+
+" Javascript --------------- {{{
+
+aug ft_javascript
+    au!
+    au FileType javascript if exists('b:match_words') | let b:match_words.= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | else | let b:match_words= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | endif
 
     au FileType javascript setl softtabstop=2 shiftwidth=2
     au FileType javascript setl formatoptions-=o
     au FileType javascript setl foldmethod=marker foldmarker={,}
 
-    au FileType javascript inorea <buffer> if if (%) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fi for (let i = 0; i < %; ++i) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fj for (let j = 0; j < %; ++j) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> ww while (%) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fa function %() {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fb function(%) {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fc (%) => {<cr><cr>}<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fe forEach(function(%) {<cr><cr>});<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> lg console.log(%);<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inoremap <buffer> ` ``<left>
 
     " Use ";f" to add function description.
     au FileType javascript nnoremap <buffer> <localleader>f :call JSDocAdd()<cr>
@@ -643,16 +770,13 @@ aug filetype_javascript
     " Use ";s" to add semicolon to the end.
     au FileType javascript nnoremap <buffer> <localleader>s A;<esc>
     au FileType javascript vnoremap <buffer> <localleader>s A;<esc>
-
-    " Map back quotes
-    au FileType javascript inoremap <buffer> ` ``<left>
 aug end
 
 " }}}
 
 " Markdown ----------------- {{{
 
-aug filetype_markdown
+aug ft_markdown
     au!
     au FileType markdown setl softtabstop=4 shiftwidth=4
     au FileType markdown setl comments=b:*,b:-,b:+,n:>
@@ -665,6 +789,9 @@ aug filetype_markdown
     au FileType markdown inorea <buffer> h4 ####
     au FileType markdown inorea <buffer> h5 #####
     au FileType markdown inorea <buffer> h6 ######
+
+    au FileType markdown inoremap <buffer> ' '
+    au FileType markdown inoremap <buffer> ` ``<left>
 
     " Use ";h" to add file header.
     au FileType markdown nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
@@ -685,12 +812,11 @@ aug filetype_markdown
     au FileType markdown nnoremap <buffer> <localleader>i mzviw<esc>a*<esc>bi*<esc>`z
     au FileType markdown vnoremap <buffer> <localleader>i <esc>`>a*<esc>`<i*<esc>`>
 
-    " Map quotes
-    au FileType markdown inoremap <buffer> ' '
-    au FileType markdown inoremap <buffer> ` ``<left>
+    " Fix markdown highlighting.
+    au FileType markdown silent call <SID>FixMarkdownHl()
 
-    " Fix highlighting
-    au FileType markdown silent! call FixMDHL()
+    " Auto-align bars when creating tables.
+    au FileType markdown inoremap <buffer> <silent> <bar> <bar><esc>:call <SID>BarAutoAlign()<cr>a
 
     " Auto-update toc on save.
     au BufWritePre *.{md,markdown} call <SID>MarkdownTocUpdate()
@@ -700,20 +826,12 @@ aug end
 
 " Python ------------------- {{{
 
-aug filetype_python
+aug ft_python
     au!
-    au FileType python let b:match_words= '\<if\>:\<elif\>:\<else\:\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>'
+    au FileType python if exists('b:match_words') | let b:match_words.= '\<if\>:\<elif\>:\<else\:\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | else | let b:match_words= '\<if\>:\<elif\>:\<else\:\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | endif
 
     au FileType python setl softtabstop=4 shiftwidth=4
     au FileType python setl foldmethod=indent foldnestmax=2 foldlevel=1
-
-    au FileType python inorea <buffer> mm def main():<cr>print("Hello World!")<cr><cr>if __name__ == "__main__":<c-d><cr>main()<up><up><up><esc>o<c-r>=EatNextWhiteChar()<cr>
-    au FileType python inorea <buffer> ii import
-    au FileType python inorea <buffer> if if % :<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType python inorea <buffer> fi for i in range(%):<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType python inorea <buffer> fj for j in range(%):<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType python inorea <buffer> ww while % :<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType python inorea <buffer> fu def %():<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";f" to add function description.
     au FileType python nnoremap <buffer> <localleader>f :let _s=@/<cr>?def<cr>:let @/=_s<cr>o"""%<cr><cr>Args:<cr><cr>Return:<c-d><cr><cr>"""<c-d><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
@@ -729,7 +847,7 @@ aug end
 
 " QuickFix ----------------- {{{
 
-aug filetype_quickfix
+aug ft_quickfix
     au!
     au FileType qf setl colorcolumn=0 nolist nocursorline nowrap tw=0
 aug end
@@ -738,37 +856,29 @@ aug end
 
 " Vim ---------------------- {{{
 
-aug filetype_vim
+aug ft_vim
     au!
     au FileType vim setl softtabstop=4 shiftwidth=4
     au FileType vim setl formatoptions-=o
     au FileType vim setl foldmethod=marker foldmarker={{{,}}}
 
-    au FileType vim inorea <buffer> if if %<cr><cr>endif<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType vim inorea <buffer> fi for i in %<cr><cr>endfor<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType vim inorea <buffer> fj for j in %<cr><cr>endfor<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType vim inorea <buffer> ww while %<cr><cr>endwhile<up><c-r>=repeat("\<TAB>", TabNumber(line(".") - 1) + 1)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType vim inorea <buffer> aa aug %<cr>au!<cr><cr>aug end<c-d><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType vim inorea <buffer> fu fu! %()<cr><cr>endfu<up><tab><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType vim inoremap <buffer> < <><left>
 
     " Use ";f" to add function description.
     au FileType vim nnoremap <buffer> <localleader>f :let _s=@/<cr>?fu<cr>:let @/=_s<cr>O" Brief: %<cr><cr>Args: <cr><cr>Return: <esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";h" to add file header.
     au FileType vim nnoremap <buffer> <localleader>h ggO" Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
-
-    " Map angle brackets
-    au FileType vim inoremap <buffer> < <><left>
 aug end
 
 " }}}
 
 " Yaml --------------------- {{{
 
-aug filetype_yaml
+aug ft_yaml
     au!
     au FileType yaml setl softtabstop=2 shiftwidth=2
-    au FileType yaml setl formatoptions-=ro
+    au FileType yaml setl formatoptions-=o
     au FileType yaml setl foldmethod=indent foldnestmax=2
 
     " Use ";h" to add file header.
@@ -791,20 +901,15 @@ aug end
 " Note:
 "   1. This approach only works when "backspace" option has "start".
 "   2. "#" indicates the cursor position.
-fu! BetterBS() "{{{
+fu! s:BetterBS() "{{{
     for l:couple in g:bs_couples
-        " Examine "#" that indicates cursor position.
         if !(l:couple =~ '#')
             continue
         endif
 
-        " Escape special characters and substitute "#" with "\%#",
-        " which means the cursor position.
         let l:regex = substitute(escape(l:couple, '/\^$*.[~'), '#', '\\%#', '')
 
         if search(l:regex, 'n')
-            " Concatenate "\<BS>" and "\<DEL>" with number of characters
-            " before and after "#".
             let l:out = repeat("\<BS>", len(matchstr(l:couple, '^.\{-}\ze#')))
             let l:out .= repeat("\<DEL>", len(matchstr(l:couple, '#\zs.\{-}$')))
 
@@ -820,48 +925,25 @@ endfu "}}}
 " Return:
 "   1. "\<CR>" in most cases.
 "   2. "\<CR>\<CR>\<UP>" and multiple "\<TAB>"s between tags.
-fu! BetterCR() "{{{
+fu! s:BetterCR() "{{{
     for l:couple in g:cr_couples
-        " Examine "#" that indicates cursor position.
         if !(l:couple =~ '#')
             continue
         endif
 
-        " Escape special characters and substitute "#" with "\%#", which means
-        " the cursor position.
         let l:regex = substitute(escape(l:couple, '/\^$*.[~'), '#', '\\%#', '')
 
         if search(l:regex, 'n')
             " "autoindent" option does not remember indent of a blank line , so
             " we have to repeat the indent of current line and +1.
             let l:out = "\<CR>\<CR>\<UP>"
-            let l:out .= repeat("\<TAB>", TabNumber(line(".")) + 1)
+            let l:out .= repeat(' ', indent('.') + &shiftwidth)
 
             return l:out
         endif
     endfor
 
     return "\<CR>"
-endfu "}}}
-
-" Brief: Use "TAB" for completion.
-"
-" Return:
-"   1. "\<TAB>" in most cases.
-"   2. "\<C-N>" if a "pum" exists.
-"   3. "\<C-X>\<C-O>" otherwise.
-fu! BetterTab() "{{{
-    " Get characters before cursor
-    let substr = strpart(getline("."), -1, col(".")+1)
-    let substr = matchstr(substr, "[^ \t]*$")
-
-    " Normal tab if there's any white char
-    if strlen(substr) == 0
-        return "\<TAB>"
-    endif
-
-    " If there is a pop-up menu, loop through it, otherwise open it.
-    return pumvisible() ? "\<C-N>" : "\<C-X>\<C-O>"
 endfu "}}}
 
 " }}}
@@ -978,11 +1060,6 @@ fu! EatNextWhiteChar() "{{{
     return c =~# '\s' ? '' : c
 endfu "}}}
 
-" Brief: Return tab numbers of given line.
-fu! TabNumber(lnum) "{{{
-    return indent(a:lnum) / &shiftwidth
-endfu "}}}
-
 " Brief: Quit if current window is the last one.
 fu! s:MyLastWindow() "{{{
     if &ft=='jsresult' || &ft=='pythonresult' || &ft=='clangresult'
@@ -997,7 +1074,7 @@ endfu "}}}
 " Markdown Toc "{{{
 
 " Brief: Generate table of contents if does't exist.
-fu! s:MarkdwonTocGenerate() "{{{
+fu! s:MarkdownTocGenerate() "{{{
     let l:winview = winsaveview()
     keepjumps norm! gg0
 
@@ -1081,32 +1158,8 @@ endfu "}}}
 
 " }}}
 
-" Brief: If modified, update any "Last Change" occurrences in first 20 lines.
-fu! UpdateTimestamps() "{{{
-    if &modified
-        " Save cursor position.
-        let save_cursor = getpos(".")
-
-        " Substitution applies to the first 20 lines.
-        let line_range  = min([20, line("$")])
-
-        " "keepjumps" excludes timestamp position from jump list.
-        keepjumps exe '1,' . line_range . 's@^\(.\{,10}Last Change: \).*@\1' .
-            \ strftime("%x %X %z") . '@e'
-
-        " Remove timestamp search pattern from search history.
-        call histdel("search", -1)
-
-        " Restore last search pattern.
-        let @/ = histget("search", -1)
-
-        " Restore cursor position.
-        call setpos(".", save_cursor)
-    endif
-endfu "}}}
-
 " Brief: Fix markdown highlighting with **.
-fu! FixMDHL() "{{{
+fu! s:FixMarkdownHl() "{{{
     " From $VIMRUNTIME/syntax/markdown.vim.
     let s:concealends = ''
     if has('conceal') && get(g:, 'markdown_syntax_conceal', 1) == 1
@@ -1125,6 +1178,41 @@ fu! FixMDHL() "{{{
     hi def link markdownBoldDelimiter         markdownBold
     hi def link markdownBoldItalic            htmlBoldItalic
     hi def link markdownBoldItalicDelimiter   markdownBoldItalic
+endfu "}}}
+
+" Brief: Auto-align bars when creating tables in markdown. Thanks tpope.
+fu! s:BarAutoAlign() "{{{
+    let p = '^\s*|\s.*\s|\s*$'
+    if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+        let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+        let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+        Tabularize/|/l1
+        normal! 0
+        call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+    endif
+endfu "}}}
+
+" Brief: If modified, update any "Last Change" occurrences in first 20 lines.
+fu! UpdateTimestamps() "{{{
+    if &modified
+        " Save cursor position.
+        let save_cursor = getpos(".")
+
+        " Substitution applies to the first 20 lines.
+        let line_range  = min([20, line("$")])
+
+        " "keepjumps" excludes timestamp position from jump list.
+        keepjumps exe '1,' . line_range . 's@^\(.\{,10}Last Change: \).*@\1' . strftime("%x %X %z") . '@e'
+
+        " Remove timestamp search pattern from search history.
+        call histdel("search", -1)
+
+        " Restore last search pattern.
+        let @/ = histget("search", -1)
+
+        " Restore cursor position.
+        call setpos(".", save_cursor)
+    endif
 endfu "}}}
 
 " Brief: Generate JSDoc-like function description. Thanks Joe.
