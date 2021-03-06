@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/3/3 20:28:34 +0800
+" Last Change: 2021/3/6 8:17:46 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -48,6 +48,7 @@
 " Be sure to have "node" installed for using "coc.nvim". Install "coc-json",
 " "coc-marketplace" with ":CocInstall". "coc-extensions" I use:
 " --------------------------------------------
+" coc-clangd                | .c,.cpp
 " coc-css                   | .css,.scss,.less
 " coc-html                  | .html
 " coc-html-css-support      |
@@ -55,6 +56,8 @@
 " coc-pyright               | .py
 " coc-tsserver              | .js,.ts
 " --------------------------------------------
+"
+" Install "clangd" for "coc-clangd" to work.
 "
 " Filetype-specific abbreviations are put separately in section "Abbreviations"
 " instead of "FileType-specific Settings" cause it seems chunky if it was there.
@@ -66,9 +69,8 @@
 " }}}
 
 " TODO
-"   0. "coc.nvim" configuration.
-"   1. "Show diff" in a split.
-"   2. "Fugitive", "Gitgutter"
+"   0. Learn "user-command"
+"   1. "Fugitive", "Gitgutter"
 
 " Variables ------------------------------------- {{{
 
@@ -175,6 +177,9 @@ aug end
 
 nmap <F4> <Plug>(coc-definition)
 imap <F4> <esc><Plug>(coc-definition)
+
+nnoremap <leader>cc :CocCommand<space>
+nnoremap <leader>ci :CocInstall<space>
 
 nnoremap <leader>cm :CocList marketplace<cr>
 
@@ -571,7 +576,8 @@ nnoremap <leader>` mzviw<esc>a`<esc>bi`<esc>`z
 nnoremap <leader>[ mzviw<esc>a]<esc>bi[<esc>`z
 
 " Show unsaved diff.
-nnoremap <leader>sd :w !diff % -<cr>
+" nnoremap <leader>sd :w !diff -u % -<cr>
+nnoremap <leader>sd :ShowDiff<cr>
 
 " Select entire buffer.
 nnoremap <leader>sa ggVG
@@ -889,7 +895,7 @@ aug end
 
 " }}}
 
-" Functions ------------------------------------- {{{
+" Functionality --------------------------------- {{{
 
 " Better keys -------------- {{{
 
@@ -950,6 +956,20 @@ endfu "}}}
 
 " Run files ---------------- {{{
 
+" Brief: Quit if current window is the last one.
+fu! s:MyLastWindow() "{{{
+    if &ft=='jsresult' || &ft=='pythonresult' || &ft=='clangresult'
+        if winnr('$') == 1
+            quit
+        endif
+    endif
+endfu "}}}
+
+aug last_window
+    au!
+    au BufEnter * call <SID>MyLastWindow()
+aug end
+
 " Brief: Show the result of "node file.js" in a split window.
 fu! s:JavascriptRunCurrentFile() "{{{
     let l:js_command = "node "
@@ -966,8 +986,8 @@ fu! s:JavascriptRunCurrentFile() "{{{
 
     " Clear the buffer, and set buffer type.
     norm! ggdG
-    setl filetype=jsresult
-    setl buftype=nofile
+    setl ft=jsresult
+    setl bt=nofile
 
     " Show the result.
     call append(0, split(l:result, '\m\n'))
@@ -992,8 +1012,8 @@ fu! s:PythonRunCurrentFile() "{{{
 
     " Clear the buffer, and set buffer type.
     norm! ggdG
-    setl filetype=pythonresult
-    setl buftype=nofile
+    setl ft=pythonresult
+    setl bt=nofile
 
     " Show the result.
     call append(0, split(l:result, '\m\n'))
@@ -1040,8 +1060,8 @@ fu! s:ClangRunCurrentFile() "{{{
 
     " Clear the buffer, and set buffer type.
     norm! ggdG
-    setl filetype=clangresult
-    setl buftype=nofile
+    setl ft=clangresult
+    setl bt=nofile
 
     " Show the result.
     call append(0, l:result)
@@ -1058,15 +1078,6 @@ endfu "}}}
 fu! EatNextWhiteChar() "{{{
     let c = nr2char(getchar(0))
     return c =~# '\s' ? '' : c
-endfu "}}}
-
-" Brief: Quit if current window is the last one.
-fu! s:MyLastWindow() "{{{
-    if &ft=='jsresult' || &ft=='pythonresult' || &ft=='clangresult'
-        if winnr('$') == 1
-            quit
-        endif
-    endif
 endfu "}}}
 
 " }}}
@@ -1149,12 +1160,63 @@ fu! s:MarkdownTocUpdate() "{{{
             silent exe l:beginLineNum . ',' . l:endLineNum . 'delete_'
 
             call cursor(l:beginLineNum -1, 1)
-            call <SID>TocGenerate()
+            call <SID>MarkdownTocGenerate()
         endif
     endif
 
     call winrestview(l:winview)
 endfu "}}}
+
+" }}}
+
+" Diff --------------------- {{{
+
+" Brief: Show unsaved changes in a split with highlight.
+fu! s:DiffUnsavedChanges() "{{{
+    let l:diff_cmd  = 'diff -u'
+
+    let l:file_name = expand('%')
+    let l:temp_name = tempname()
+
+    exe 'silent w!' . l:temp_name
+    let diff = system(l:diff_cmd.' '.shellescape(l:file_name).' '.l:temp_name)
+    call delete(l:temp_name)
+
+    if bufwinnr('__My_Diff__') == -1
+        sp __My_Diff__
+    else
+        exe bufwinnr('__My_Diff__') . 'wincmd w'
+    endif
+    norm! ggdG
+    setl ft=mydiff
+    setl bt=nofile
+
+    call append(0, split(diff, '\n'))
+
+    hi myDiffBefore ctermfg=red
+    hi myDiffAfter  ctermfg=green
+
+    syn match myDiffBefore "^-.*$"
+    syn match myDiffAfter  "^+.*$"
+endfu "}}}
+
+" Brief: Turn on highlight in diff window.
+fu! s:DiffHighlight() "{{{
+    if &ft=='mydiff'
+        hi myDiffBefore ctermfg=red
+        hi myDiffAfter  ctermfg=green
+    else
+        hi clear myDiffBefore
+        hi clear myDiffAfter
+    endif
+endfu "}}}
+
+command! -nargs=0 ShowDiff :silent! call <SID>DiffUnsavedChanges()<cr>
+
+aug mydiff
+    au!
+    au BufEnter * call <SID>DiffHighlight()
+aug end
 
 " }}}
 
@@ -1257,7 +1319,7 @@ endfu "}}}
 
 " }}}
 
-" Autocommands ---------------------------------- {{{
+" Commands -------------------------------------- {{{
 
 " Timestamps --------------- {{{
 
@@ -1302,15 +1364,6 @@ aug line_return
         \ if line("'\"") > 0 && line("'\"") <= line("$") |
         \     exe 'norm! g`"zvzz' |
         \ endif
-aug end
-
-" }}}
-
-" Last window -------------- {{{
-
-aug last_window
-    au!
-    au BufEnter * call <SID>MyLastWindow()
 aug end
 
 " }}}
