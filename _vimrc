@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/3/6 8:17:46 +0800
+" Last Change: 03/09/2021 11:07:42 PM +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -69,7 +69,6 @@
 " }}}
 
 " TODO
-"   0. Learn "user-command"
 "   1. "Fugitive", "Gitgutter"
 
 " Variables ------------------------------------- {{{
@@ -216,7 +215,7 @@ au FileType html,css,javascript imap <buffer> <c-s> <c-y>n
 let g:user_emmet_mode='i'
 let g:user_emmet_install_global=0
 
-au FileType html,css,javascript EmmetInstall
+au FileType html,css,javascript if exists(':EmmetInstall') | exe 'EmmetInstall' | endif
 
 " }}}
 
@@ -359,6 +358,7 @@ set autowrite
 set formatoptions=qrn1j
 set virtualedit+=block
 set shortmess+=Ic
+set visualbell t_vb=
 set backspace=indent,eol,start
 set scrolloff=3
 set sidescroll=1
@@ -545,6 +545,7 @@ nnoremap <silent> <leader>sv :so $MYVIMRC<cr>:noh<cr>
 
 nnoremap <leader>ev :vsp $MYVIMRC<cr>
 nnoremap <leader>ec :vsp<cr>:CocConfig<cr>
+nnoremap <leader>eb :vsp ~/.bashrc<cr>
 
 " }}}
 
@@ -705,7 +706,6 @@ aug ft_c
     au FileType c,cpp if exists('b:match_words') | let b:match_words.= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | else | let b:match_words= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | endif
 
     au FileType c,cpp setl softtabstop=4 shiftwidth=4
-    au FileType c,cpp setl foldlevel=1
     au FileType c,cpp setl foldmethod=marker foldmarker={,}
 
     " Use ";h" to add file header.
@@ -743,11 +743,24 @@ aug end
 
 " }}}
 
-" JSON --------------------- {{{
+" Java --------------------- {{{
 
-aug ft_json
+aug ft_java
     au!
-    au FileType json syntax match Comment +\/\/.\+$+
+    au FileType java if exists('b:match_words') | let b:match_words.= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | else | let b:match_words= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | endif
+
+    au FileType java setl softtabstop=4 shiftwidth=4
+    au FileType java setl foldmethod=marker foldmarker={,}
+
+    " Use ";h" to add file header.
+    au FileType java nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+
+    " Use ";r" to run without args.
+    au FileType java nnoremap <buffer> <localleader>r :call <SID>JavaRunCurrentFile()<cr>
+
+    " Use ";s" to add semicolon to the end.
+    au FileType java nnoremap <buffer> <localleader>s A;<esc>
+    au FileType java vnoremap <buffer> <localleader>s A;<esc>
 aug end
 
 " }}}
@@ -780,6 +793,15 @@ aug end
 
 " }}}
 
+" JSON --------------------- {{{
+
+aug ft_json
+    au!
+    au FileType json syntax match Comment +\/\/.\+$+
+aug end
+
+" }}}
+
 " Markdown ----------------- {{{
 
 aug ft_markdown
@@ -808,15 +830,20 @@ aug ft_markdown
     " Use ";u" to update toc.
     au FileType markdown nnoremap <buffer> <localleader>u :call <SID>MarkdownTocUpdate()<cr>
 
+    " Use ";j" to jump to anchor.
+    au FileType markdown nnoremap <buffer> <localleader>j :call <SID>MarkdownJumpToAnchor()<cr>
+
     " Use "ih" and "ah" to move "inside" and "around" heading, thanks Steve.
     au FileType markdown onoremap <buffer> ih :<c-u>execute "norm! ?^#\\{1,6} \r:nohlsearch\rgn\elv$h"<cr>
     au FileType markdown onoremap <buffer> ah :<c-u>execute "norm! ?^#\\{1,6} \r:nohlsearch\rv$h"<cr>
 
-    " Use ";b" to make bold, ";i" to make italic.
+    " Use ";b" to make bold, ";i" to make italic, ";d" to cross out.
     au FileType markdown nnoremap <buffer> <localleader>b mzviw<esc>a**<esc>hbi**<esc>`z
     au FileType markdown vnoremap <buffer> <localleader>b <esc>`>a**<esc>`<i**<esc>`>
     au FileType markdown nnoremap <buffer> <localleader>i mzviw<esc>a*<esc>bi*<esc>`z
     au FileType markdown vnoremap <buffer> <localleader>i <esc>`>a*<esc>`<i*<esc>`>
+    au FileType markdown nnoremap <buffer> <localleader>d mzviw<esc>a~~<esc>hbi~~<esc>`z
+    au FileType markdown vnoremap <buffer> <localleader>d <esc>`>a~~<esc>`<i~~<esc>`>
 
     " Fix markdown highlighting.
     au FileType markdown silent call <SID>FixMarkdownHl()
@@ -856,6 +883,20 @@ aug end
 aug ft_quickfix
     au!
     au FileType qf setl colorcolumn=0 nolist nocursorline nowrap tw=0
+aug end
+
+" }}}
+
+" Sh ----------------------- {{{
+
+aug ft_sh
+    au!
+
+    au FileType sh setl softtabstop=2 shiftwidth=2
+    au FileType sh setl foldmethod=marker
+
+    " Use ";h" to add file header.
+    au FileType sh nnoremap <buffer> <localleader>h ggO#!/usr/bin/env bash<cr># Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
@@ -958,7 +999,7 @@ endfu "}}}
 
 " Brief: Quit if current window is the last one.
 fu! s:MyLastWindow() "{{{
-    if &ft=='jsresult' || &ft=='pythonresult' || &ft=='clangresult'
+    if &ft=='jsresult' || &ft=='pythonresult' || &ft=='clangresult' || &ft=='javaresult'
         if winnr('$') == 1
             quit
         endif
@@ -1070,6 +1111,35 @@ fu! s:ClangRunCurrentFile() "{{{
     exe bufwinnr("#") . "wincmd w"
 endfu "}}}
 
+" Brief: Show the result of "java file.java" in a split window.
+fu! s:JavaRunCurrentFile() "{{{
+    let l:java_compile_command = "javac "
+    let l:java_run_command = "java "
+
+    let l:fname = substitute(bufname('%'), '\.java$', '', '')
+
+    " Compiling...
+    call system(l:java_compile_command . bufname('%'))
+
+    " Cleaning...
+    call delete(l:fname . 'class')
+
+    " Running...
+    let l:result = system(l:java_run_command . l:fname)
+
+    " Appeding...
+    if bufwinnr('__Java_Result__') == -1
+        vsp __Java_Result__
+    else
+        exe bufwinnr('__Java_Result__') . 'wincmd w'
+    endif
+    norm! ggdG
+    setl ft=javaresult
+    setl bt=nofile
+    call append(0, l:result)
+    exe bufwinnr('#') . 'wincmd w'
+endfu "}}}
+
 " }}}
 
 " Utils -------------------- {{{
@@ -1163,6 +1233,59 @@ fu! s:MarkdownTocUpdate() "{{{
             call <SID>MarkdownTocGenerate()
         endif
     endif
+
+    call winrestview(l:winview)
+endfu "}}}
+
+" Brief: Jump to anchor in table of content.
+fu! s:MarkdownJumpToAnchor() "{{{
+    let saveReg = @"
+    norm! ^f#vi(y
+    let l:anchorName = substitute(@", '^#', '', '')
+    let @" = saveReg
+
+    let l:winview = winsaveview()
+    keepjumps norm! gg0
+
+    let l:headingLineRegex = '\m^#\{1,6}'
+
+    let l:headingLines  = []
+    let l:headingNames  = []
+    let l:headingLinks  = []
+
+    let l:headingLineNum = []
+
+    while search(l:headingLineRegex, 'W') != 0
+        call add(l:headingLines, getline('.'))
+        call add(l:headingLineNum, line('.'))
+    endwhile
+
+    for l:headingLine in l:headingLines
+        let l:headingName = substitute(l:headingLine, '^#\+\s\+', '', '')
+        let l:headingName = substitute(l:headingName, '\s\+#\+$', '', '')
+        let l:headingName = substitute(l:headingName, '\[\([^\[\]]*\)\]([^()]*)', '\1', 'g')
+        let l:headingName = substitute(l:headingName, '\[\([^\[\]]*\)\]\[[^\[\]]*\]', '\1', 'g')
+
+        call add(l:headingNames, l:headingName)
+    endfor
+
+    for l:headingName in l:headingNames
+        let l:headingLink = tr(l:headingName, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')
+        let l:headingLink = substitute(l:headingLink, "\\%#=0[^[:alnum:]\u00C0-\u00FF\u0400-\u04ff\u4e00-\u9fbf\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF _-]", "", "g")
+        let l:headingLink = substitute(l:headingLink, ' ', '-', 'g')
+
+        call add(l:headingLinks, l:headingLink)
+    endfor
+
+    let i = 0
+    for l:headingLink in l:headingLinks
+        if l:headingLink ==# l:anchorName
+            call cursor(l:headingLineNum[i], 1)
+            norm! zzzv
+            return
+        endif
+        let i += 1
+    endfor
 
     call winrestview(l:winview)
 endfu "}}}
