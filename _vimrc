@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/3/11 18:23:25 +0800
+" Last Change: 2021/3/11 19:52:39 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -9,6 +9,9 @@
 " properly. The version and bits of "python" must be compatible with "vim". When
 " this script is written, a possible solution would be "anaconda3-5.3.0" and
 " "gvim-8.1.2424".
+"
+" It is weird that "apt-get" gives me a version without clipboard support, so
+" better install "vim-gtk" on debian-based os.
 "
 " Plugins are installed under "~/.vim/bundle" or "~\vimfiles\bundle". Pathogen
 " makes it real easy and quick. Just clone the plugin repo and run ":Helptags"
