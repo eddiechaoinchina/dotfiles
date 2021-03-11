@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 03/09/2021 11:07:42 PM +0800
+" Last Change: 2021/3/11 18:23:25 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -1172,7 +1172,11 @@ fu! s:MarkdownTocGenerate() "{{{
     let l:headingLinks  = []
 
     while search(l:headingLineRegex, 'W') != 0
-        call add(l:headingLines, getline('.'))
+        if getline('.') =~? 'table.*of.*contents'
+            continue
+        else
+            call add(l:headingLines, getline('.'))
+        endif
     endwhile
 
     for l:headingLine in l:headingLines
@@ -1199,7 +1203,13 @@ fu! s:MarkdownTocGenerate() "{{{
 
     call winrestview(l:winview)
 
+    if len(l:headingLevels) == 0
+        return
+    endif
+
     silent put ='<!-- TOC START -->'
+    silent put =''
+    silent put =repeat('#', min(l:headingLevels)).' '.'Table of contents'
     silent put =''
 
     let i = 0
