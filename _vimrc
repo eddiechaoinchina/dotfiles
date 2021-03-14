@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/3/11 19:52:39 +0800
+" Last Change: 2021/3/14 15:20:24 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -52,12 +52,13 @@
 " "coc-marketplace" with ":CocInstall". "coc-extensions" I use:
 " --------------------------------------------
 " coc-clangd                | .c,.cpp
-" coc-css                   | .css,.scss,.less
+" coc-css                   | .css,.scss
 " coc-html                  | .html
 " coc-html-css-support      |
-" coc-json                  | .json
+" coc-json                  | .json,.jsonc
 " coc-pyright               | .py
-" coc-tsserver              | .js,.ts
+" coc-tsserver              | .js
+" coc-vetur                 | .vue
 " --------------------------------------------
 "
 " Install "clangd" for "coc-clangd" to work.
@@ -436,12 +437,14 @@ aug end
 
 " }}}
 
-iab mymail nerdzzh@gmail.com
-iab myname Will Chao
-iab waht   what
-iab teh    the
-iab tehn   then
+iab wmail nerdzzh@gmail.com
+iab wname Will Chao
 
+iab waht what
+iab teh  the
+iab tehn then
+
+iab <expr> lhost 'http://127.0.0.1:'.EatNextWhiteChar()
 iab <expr> dts strftime("%x %X %z")
 
 " }}}
@@ -717,9 +720,30 @@ aug ft_c
     " Use ";r" to run without args.
     au FileType c,cpp nnoremap <buffer> <localleader>r :call <SID>ClangRunCurrentFile()<cr>
 
-    " Use ";s" to add semicolon to the end.
+    " Use ";s" to add semicolon to eol.
     au FileType c,cpp nnoremap <buffer> <localleader>s A;<esc>
     au FileType c,cpp vnoremap <buffer> <localleader>s A;<esc>
+aug end
+
+" }}}
+
+" CSS ---------------------- {{{
+
+aug ft_css
+    au!
+    au FileType css setl softtabstop=2 shiftwidth=2
+    au FileType css setl foldmethod=marker foldmarker={,}
+    au FileType css setl formatoptions-=o
+
+    " Use ";h" to add file header.
+    au FileType css nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+
+    " Use ";s" to add semicolon to eol.
+    au FileType css nnoremap <buffer> <localleader>s A;<esc>
+    au FileType css vnoremap <buffer> <localleader>s A;<esc>
+
+    " Use ";f" to format properties.
+    au FileType css nnoremap <buffer> <localleader>f :let _s=@"<CR>?{<CR>jV/\v^\s*\}?$<CR>k:sort<CR>:noh<CR>:let @"=_s<CR>
 aug end
 
 " }}}
@@ -761,7 +785,7 @@ aug ft_java
     " Use ";r" to run without args.
     au FileType java nnoremap <buffer> <localleader>r :call <SID>JavaRunCurrentFile()<cr>
 
-    " Use ";s" to add semicolon to the end.
+    " Use ";s" to add semicolon to eol.
     au FileType java nnoremap <buffer> <localleader>s A;<esc>
     au FileType java vnoremap <buffer> <localleader>s A;<esc>
 aug end
@@ -775,8 +799,8 @@ aug ft_javascript
     au FileType javascript if exists('b:match_words') | let b:match_words.= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | else | let b:match_words= ',\%(\<else\s\+\)\@<!' . '\<if\>:\<else\s\+if\>:\<else\>' . ',\<\(while\|for\)\>:\<continue\>:\<break\>' | endif
 
     au FileType javascript setl softtabstop=2 shiftwidth=2
-    au FileType javascript setl formatoptions-=o
     au FileType javascript setl foldmethod=marker foldmarker={,}
+    au FileType javascript setl formatoptions-=o
 
     au FileType javascript inoremap <buffer> ` ``<left>
 
@@ -789,7 +813,7 @@ aug ft_javascript
     " Use ";r" to run without args.
     au FileType javascript nnoremap <buffer> <localleader>r :call <SID>JavascriptRunCurrentFile()<cr>
 
-    " Use ";s" to add semicolon to the end.
+    " Use ";s" to add semicolon to eol.
     au FileType javascript nnoremap <buffer> <localleader>s A;<esc>
     au FileType javascript vnoremap <buffer> <localleader>s A;<esc>
 aug end
@@ -909,8 +933,8 @@ aug end
 aug ft_vim
     au!
     au FileType vim setl softtabstop=4 shiftwidth=4
-    au FileType vim setl formatoptions-=o
     au FileType vim setl foldmethod=marker foldmarker={{{,}}}
+    au FileType vim setl formatoptions-=o
 
     au FileType vim inoremap <buffer> < <><left>
 
@@ -928,8 +952,8 @@ aug end
 aug ft_yaml
     au!
     au FileType yaml setl softtabstop=2 shiftwidth=2
-    au FileType yaml setl formatoptions-=o
     au FileType yaml setl foldmethod=indent foldnestmax=2
+    au FileType yaml setl formatoptions-=o
 
     " Use ";h" to add file header.
     au FileType yaml nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
