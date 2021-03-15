@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/3/14 15:20:24 +0800
+" Last Change: 2021/3/15 19:50:28 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -947,7 +947,29 @@ aug end
 
 " }}}
 
-" Yaml --------------------- {{{
+" XML ---------------------- {{{
+
+aug ft_xml
+    au!
+    au FileType xml setl softtabstop=2 shiftwidth=2
+    au FileType xml setl formatoptions+=l
+    au FileType xml setl foldmethod=manual
+
+    au FileType xml inoremap <buffer> < <><left>
+
+    " Use ";h" to add file header.
+    au FileType xml nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+
+    " Use ";f" to fold current tag.
+    au FileType xml nnoremap <buffer> <localleader>f Vatzf
+
+    " Use ";i" to indent current tag.
+    au FileType xml nnoremap <buffer> <localleader>i Vat=
+aug end
+
+" }}}
+
+" YAML --------------------- {{{
 
 aug ft_yaml
     au!
