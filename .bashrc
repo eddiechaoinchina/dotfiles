@@ -1,3 +1,9 @@
+#!/usr/bin/env bash
+# Author: Will Chao <nerdzzh@gmail.com>
+# Filename: .bashrc
+# Last Change: 03/15/2021 09:23:06 PM +0800
+# Brief: My .bashrc File
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -143,5 +149,6 @@ export HADOOP_HOME="/usr/share/hadoop"
 
 alias lss='ls -A'
 alias sob='source ~/.bashrc'
+alias vvr='/usr/bin/v2rayL/v2rayLui'
 
 # }}}

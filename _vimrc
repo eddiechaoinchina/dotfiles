@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/3/15 19:50:28 +0800
+" Last Change: 03/15/2021 09:17:57 PM +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -549,9 +549,10 @@ nnoremap <leader>ss :so %<cr>
 
 nnoremap <silent> <leader>sv :so $MYVIMRC<cr>:noh<cr>
 
-nnoremap <leader>ev :vsp $MYVIMRC<cr>
-nnoremap <leader>ec :vsp<cr>:CocConfig<cr>
 nnoremap <leader>eb :vsp ~/.bashrc<cr>
+nnoremap <leader>ec :vsp<cr>:CocConfig<cr>
+nnoremap <leader>ev :vsp $MYVIMRC<cr>
+nnoremap <leader>ez :vsp ~/.zshrc<cr>
 
 " }}}
 
@@ -919,11 +920,12 @@ aug end
 aug ft_sh
     au!
 
-    au FileType sh setl softtabstop=2 shiftwidth=2
-    au FileType sh setl foldmethod=marker
+    au FileType sh,zsh setl softtabstop=2 shiftwidth=2
+    au FileType sh,zsh setl foldmethod=marker foldmarker={{{,}}}
+    au FileType sh,zsh setl formatoptions-=o
 
     " Use ";h" to add file header.
-    au FileType sh nnoremap <buffer> <localleader>h ggO#!/usr/bin/env bash<cr># Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+    au FileType sh,zsh nnoremap <buffer> <localleader>h ggO#!/usr/bin/env bash<cr># Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
