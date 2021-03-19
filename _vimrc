@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 03/15/2021 09:17:57 PM +0800
+" Last Change: 2021/3/18 16:26:52 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -103,7 +103,7 @@ let g:markdown_folding=1
 "
 " Also pairs that need an indent after hitting return, achieved with function
 " BetterCR().
-let g:bs_couples = ['(#)', '[#]', '{#}', '<#>', '"#"', "'#'", '`#`']
+let g:bs_couples = ['(#)', '[#]', '{#}', '<#>', '"#"', "'#'", '`#`', '*#*']
 let g:cr_couples = ['>#<', '[#]', '{#}', '`#`']
 
 " Leader keys
@@ -834,7 +834,7 @@ aug end
 
 aug ft_markdown
     au!
-    au FileType markdown setl softtabstop=4 shiftwidth=4
+    au FileType markdown setl softtabstop=2 shiftwidth=2
     au FileType markdown setl comments=b:*,b:-,b:+,n:>
     au FileType markdown setl formatoptions+=r
     au FileType markdown setl foldlevel=3
@@ -848,6 +848,7 @@ aug ft_markdown
 
     au FileType markdown inoremap <buffer> ' '
     au FileType markdown inoremap <buffer> ` ``<left>
+    au FileType markdown inoremap <buffer> * **<left>
 
     " Use ";h" to add file header.
     au FileType markdown nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
