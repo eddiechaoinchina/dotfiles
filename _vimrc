@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/3/18 16:26:52 +0800
+" Last Change: 2021/3/20 12:19:56 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -93,6 +93,10 @@ else
     let $MYVIMRC = "$HOME/.vimrc"
 endif
 
+" Leader keys, my preferences.
+let mapleader = ","
+let maplocalleader = ";"
+
 " This enables folding feature for markdown files if you are using the latest
 " version of Vim, for some reason it is not documented, yet it is indeed
 " a built-in feature.
@@ -106,9 +110,18 @@ let g:markdown_folding=1
 let g:bs_couples = ['(#)', '[#]', '{#}', '<#>', '"#"', "'#'", '`#`', '*#*']
 let g:cr_couples = ['>#<', '[#]', '{#}', '`#`']
 
-" Leader keys
-let mapleader = ","
-let maplocalleader = ";"
+" This defines a dictionary with commentstrings that should be used in embedded
+" code according to the filetype, thanks suy.
+let g:context_commentstrings = {
+            \ 'html': {
+            \     'javaScript': '//%s',
+            \     'cssStyle': '/*%s*/',
+            \ },
+            \ 'vue': {
+            \     'javaScript': '//%s',
+            \     'cssStyle': '/*%s*/',
+            \ },
+            \}
 
 " }}}
 
@@ -213,13 +226,13 @@ let g:ctrlp_working_path_mode='ra'
 
 " Emmet -------------------- {{{
 
-au FileType html,css,javascript imap <buffer> <c-e> <c-y>,
-au FileType html,css,javascript imap <buffer> <c-s> <c-y>n
+au FileType html,css,javascript,vue imap <buffer> <c-e> <c-y>,
+au FileType html,css,javascript,vue imap <buffer> <c-s> <c-y>n
 
 let g:user_emmet_mode='i'
 let g:user_emmet_install_global=0
 
-au FileType html,css,javascript if exists(':EmmetInstall') | exe 'EmmetInstall' | endif
+au FileType html,css,javascript,vue if exists(':EmmetInstall') | exe 'EmmetInstall' | endif
 
 " }}}
 
@@ -950,6 +963,15 @@ aug end
 
 " }}}
 
+" Vue ---------------------- {{{
+
+aug ft_vue
+    au!
+    au FileType vue setl softtabstop=2 shiftwidth=2
+aug end
+
+" }}}
+
 " XML ---------------------- {{{
 
 aug ft_xml
@@ -1405,7 +1427,40 @@ aug end
 
 " }}}
 
-" Brief: Fix markdown highlighting with **.
+" Context Commentstring ---- {{{
+
+aug context_cs
+    au!
+    au FileType html,vue call <SID>ContextCommentstringEnable()
+aug end
+
+fu! s:ContextCommentstringEnable() "{{{
+    aug context_cs_enable
+        au! CursorMoved <buffer>
+
+        if !empty(&filetype)&&has_key(g:context_commentstrings, &filetype)
+            let b:original_commentstring=&commentstring
+            au CursorMoved <buffer> call <SID>ContextCommentstringUpdate()
+        endif
+    aug end
+endfu "}}}
+
+fu! s:ContextCommentstringUpdate() "{{{
+    let stack=synstack(line('.'), col('.'))
+    if !empty(stack)
+        for name in map(stack, 'synIDattr(v:val, "name")')
+            if has_key(g:context_commentstrings[&filetype], name)
+                let &commentstring=g:context_commentstrings[&filetype][name]
+                return
+            endif
+        endfor
+    endif
+    let &commentstring=b:original_commentstring
+endfu "}}}
+
+" }}}
+
+" Brief: Fix markdown highlighting on **.
 fu! s:FixMarkdownHl() "{{{
     " From $VIMRUNTIME/syntax/markdown.vim.
     let s:concealends = ''
