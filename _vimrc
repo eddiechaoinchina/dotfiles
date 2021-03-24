@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/3/20 12:19:56 +0800
+" Last Change: 2021/3/20 23:23:37 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -736,7 +736,6 @@ aug ft_c
 
     " Use ";s" to add semicolon to eol.
     au FileType c,cpp nnoremap <buffer> <localleader>s A;<esc>
-    au FileType c,cpp vnoremap <buffer> <localleader>s A;<esc>
 aug end
 
 " }}}
@@ -754,7 +753,6 @@ aug ft_css
 
     " Use ";s" to add semicolon to eol.
     au FileType css nnoremap <buffer> <localleader>s A;<esc>
-    au FileType css vnoremap <buffer> <localleader>s A;<esc>
 
     " Use ";f" to format properties.
     au FileType css nnoremap <buffer> <localleader>f :let _s=@"<CR>?{<CR>jV/\v^\s*\}?$<CR>k:sort<CR>:noh<CR>:let @"=_s<CR>
@@ -801,7 +799,6 @@ aug ft_java
 
     " Use ";s" to add semicolon to eol.
     au FileType java nnoremap <buffer> <localleader>s A;<esc>
-    au FileType java vnoremap <buffer> <localleader>s A;<esc>
 aug end
 
 " }}}
@@ -829,7 +826,6 @@ aug ft_javascript
 
     " Use ";s" to add semicolon to eol.
     au FileType javascript nnoremap <buffer> <localleader>s A;<esc>
-    au FileType javascript vnoremap <buffer> <localleader>s A;<esc>
 aug end
 
 " }}}
@@ -968,6 +964,19 @@ aug end
 aug ft_vue
     au!
     au FileType vue setl softtabstop=2 shiftwidth=2
+    au FileType vue setl formatoptions+=l
+    au FileType vue setl foldmethod=manual
+
+    au FileType vue inoremap <buffer> ` ``<left>
+
+    " Use ";f" to fold current tag.
+    au FileType vue nnoremap <buffer> <localleader>f Vatzf
+
+    " Use ";i" to indent current tag.
+    au FileType vue nnoremap <buffer> <localleader>i Vat=
+
+    " Use ";s" to add semicolon to eol.
+    au FileType vue nnoremap <buffer> <localleader>s A;<esc>
 aug end
 
 " }}}
