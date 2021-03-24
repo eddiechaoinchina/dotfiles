@@ -1,7 +1,10 @@
 ; WtHotkey.ahk
-; To Open "Windows Terminal" like unix's terminal.
-; Thanks @Daniel Schroeder for his post.
-; Install "AutoHotkey" to get this script running.
+;
+; Help you open Windows Terminal like Unix's terminal. Thanks Daniel Schroeder
+; for his post.
+;
+; Please install "AutoHotkey" to get this script running. Add a shortcut of it
+; to autostart menu.
 
 SwitchToWindowsTerminal()
 {
