@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/3/20 23:23:37 +0800
+" Last Change: 2021/4/8 23:28:02 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -31,6 +31,8 @@
 " commentary   | comment stuff out     | ;c
 " ctrl-p       | fuzzy file finder     | ,,
 " emmet        | html,css abbrevs      | <c-e>
+" fugitive     | git integration       |
+" gitgutter    | git diff sign         |
 " nerdtree     | tree file explorer    | <f2>
 " polyglot     | syntax highlighting   |
 " supertab     | insert completion     |
@@ -71,9 +73,6 @@
 " much. Best regards.
 
 " }}}
-
-" TODO
-"   1. "Fugitive", "Gitgutter"
 
 " Variables ------------------------------------- {{{
 
@@ -236,6 +235,12 @@ au FileType html,css,javascript,vue if exists(':EmmetInstall') | exe 'EmmetInsta
 
 " }}}
 
+" Fugitive ----------------- {{{
+
+nnoremap <leader>G :Git<space>
+
+" }}}
+
 " NERDTree ----------------- {{{
 
 nnoremap <F2> :NERDTreeToggle<cr>
@@ -380,6 +385,7 @@ set backspace=indent,eol,start
 set scrolloff=3
 set sidescroll=1
 set sidescrolloff=10
+set updatetime=100
 
 " }}}
 
