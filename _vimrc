@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/4/8 23:28:02 +0800
+" Last Change: 2021/4/9 22:19:32 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -239,6 +239,16 @@ au FileType html,css,javascript,vue if exists(':EmmetInstall') | exe 'EmmetInsta
 
 nnoremap <leader>G :Git<space>
 
+nnoremap <leader>ga :Git add<space>
+nnoremap <leader>gb :Git blame<cr>
+nnoremap <leader>gd :Git diff<cr>
+nnoremap <leader>gl :Git log<cr>
+nnoremap <leader>gp :Git push<cr>
+nnoremap <leader>gs :Git<cr>
+
+nnoremap <leader>gci :Git commit<cr>
+nnoremap <leader>gco :Git checkout<space>
+
 " }}}
 
 " NERDTree ----------------- {{{
@@ -321,14 +331,15 @@ set statusline+=\ %n\                          " buffer number
 set statusline+=%{&ff}                         " file format
 set statusline+=%y                             " file type
 set statusline+=\ %<%F                         " full path
-set statusline+=%1*%m%*                        " modified flag
+set statusline+=%1*%m%*\                       " modified flag
+set statusline+=%2*%{FugitiveStatusline()}%*   " git branch
 set statusline+=%=%5l                          " current line
 set statusline+=/%L                            " total lines
 set statusline+=%4v\                           " virtual column number
 set statusline+=0x%04B\                        " character under cursor
 
-" Use red to mark the modified flag (taken from manual :D)
 hi User1 term=inverse,bold cterm=inverse,bold ctermfg=red
+hi User2 term=inverse,bold cterm=inverse,bold ctermfg=blue
 
 " }}}
 
