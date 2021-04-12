@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/4/9 23:51:56 +0800
+" Last Change: 2021/4/12 18:48:23 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -430,8 +430,9 @@ aug ft_javascript_abbrev
     au FileType javascript inorea <buffer> fj for (let j = 0; j < %; ++j) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> ww while (%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> fa function %() {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fb function(%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> fb function (%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> fc (%) => {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> fd (function () {<cr><cr>})();<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr>'use strict';<cr><cr><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> fe forEach(function(%) {<cr><cr>});<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> lg console.log(%);<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 aug end
