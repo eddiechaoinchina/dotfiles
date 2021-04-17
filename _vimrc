@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/4/12 18:48:23 +0800
+" Last Change: 2021/4/17 20:31:02 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -781,18 +781,21 @@ aug end
 
 aug ft_css
     au!
-    au FileType css setl softtabstop=2 shiftwidth=2
-    au FileType css setl foldmethod=marker foldmarker={,}
-    au FileType css setl formatoptions-=o
+    au FileType css,scss setl softtabstop=2 shiftwidth=2
+    au FileType css,scss setl foldmethod=marker foldmarker={,}
+    au FileType css,scss setl formatoptions-=o
 
     " Use ";h" to add file header.
-    au FileType css nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType css,scss nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";s" to add semicolon to eol.
-    au FileType css nnoremap <buffer> <localleader>s A;<esc>
+    au FileType css,scss nnoremap <buffer> <localleader>s A;<esc>
 
     " Use ";f" to format properties.
-    au FileType css nnoremap <buffer> <localleader>f :let _s=@"<CR>?{<CR>jV/\v^\s*\}?$<CR>k:sort<CR>:noh<CR>:let @"=_s<CR>
+    au FileType css,scss nnoremap <buffer> <localleader>f :let _s=@"<CR>?{<CR>jV/\v^\s*\}?$<CR>k:sort<CR>:noh<CR>:let @"=_s<CR>
+
+    " Use ";r" to compile scss into css.
+    au FileType css,scss nnoremap <buffer> <localleader>r :call SassCompile()<cr>
 aug end
 
 " }}}
@@ -1601,6 +1604,13 @@ fu! JSDocAdd() "{{{
         call add(l:lines, l:space . ' */')
         call append(line('.')-1, l:lines)
     endif
+endfu "}}}
+
+" Brief: Compile .scss single file into .css version and do the cleaning.
+fu! SassCompile() "{{{
+    call system('sass '.bufname('%').' '.substitute(bufname('%'), 's\(css\)$', '\1', ''))
+    call delete('.sass-cache', 'rf')
+    call delete(substitute(bufname('%'), 's\(css\)$', '\1.map', ''))
 endfu "}}}
 
 " }}}
