@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: .zshrc
-# Last Change: 04/18/2021 09:33:33 PM +0800
+# Last Change: 04/19/2021 05:10:08 PM +0800
 # Brief: My .zshrc File
 
 # Varibles -------------------------------------- {{{
@@ -15,6 +15,7 @@ export PATH="/home/zzh/.local/bin:$PATH"
 export PATH="/usr/share/hadoop/bin:$PATH"
 export PATH="/usr/share/hadoop/sbin:$PATH"
 export PATH="/usr/share/spark/bin:$PATH"
+export PATH="/usr/share/hbase/bin:$PATH"
 
 # }}}
 
@@ -36,6 +37,9 @@ export HADOOP_INSTALL=$HADOOP_HOME
 
 # Spark
 export SPARK_HOME="/usr/share/spark"
+
+# Hbase
+export HBASE_HOME="/usr/share/hbase"
 
 # }}}
 
