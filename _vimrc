@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/4/17 20:31:02 +0800
+" Last Change: 2021/4/22 12:01:05 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -593,6 +593,9 @@ nnoremap <leader>wq :wq<cr>
 nnoremap <leader>ww :w<cr>
 nnoremap <leader>qq :q<cr>
 nnoremap <leader>fq :q!<cr>
+
+nnoremap <leader>wa :wa<cr>
+nnoremap <leader>qa :qa<cr>
 
 nnoremap <leader>ws :w<cr>:so %<cr>
 nnoremap <leader>ss :so %<cr>
