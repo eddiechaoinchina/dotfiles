@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/4/23 11:22:55 +0800
+" Last Change: 04/23/21 22:36:25 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -617,6 +617,7 @@ nnoremap <silent> <leader>sv :so $MYVIMRC<cr>:noh<cr>
 
 nnoremap <leader>eb :vsp ~/.bashrc<cr>
 nnoremap <leader>ec :vsp<cr>:CocConfig<cr>
+nnoremap <leader>et :vsp ~/.tmux.conf<cr>
 nnoremap <leader>ev :vsp $MYVIMRC<cr>
 nnoremap <leader>ez :vsp ~/.zshrc<cr>
 
