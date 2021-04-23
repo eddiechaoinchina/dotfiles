@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 2021/4/22 12:01:05 +0800
+" Last Change: 2021/4/23 11:22:55 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -324,6 +324,19 @@ endif
 
 " }}}
 
+" Shell -------------------- {{{
+
+if g:os == "Windows"
+    set shell=powershell.exe " Fuck you, powershell.
+    set shellcmdflag=-c
+    set shellquote=\"
+    set shellxquote=
+elseif g:os == "Linux"
+    set shell=/bin/bash
+endif
+
+" }}}
+
 " Statusline --------------- {{{
 
 set statusline=                                " Thanks Tassos!
@@ -621,11 +634,6 @@ nnoremap <leader>bp :bp<cr>
 nnoremap <leader>bd :bp\|bd #<cr>
 nnoremap <leader>bb :ls<cr>:buffer<space>
 
-" Quickfix window
-nnoremap <leader>qo :copen 18<cr>
-nnoremap <leader>qn :cnext<cr>
-nnoremap <leader>qp :cprevious<cr>
-
 " Capitalize a word.
 nnoremap <c-u> mzgUiw`z
 
@@ -648,6 +656,9 @@ nnoremap <silent> <leader><space> :noh<cr>:call clearmatches()<cr>
 
 " Clean trailing whitespaces.
 nnoremap <silent> <leader>W mz:let _s=@/<cr>:%s/\s\+$//e<cr>:noh<cr>:let @/=_s<cr>`z
+
+" Open terminal window.
+nnoremap <leader>t :term<cr>
 
 " }}}
 
