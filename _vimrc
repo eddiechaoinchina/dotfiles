@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 04/23/21 22:36:25 +0800
+" Last Change: 04/24/21 15:56:43 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -991,6 +991,21 @@ aug ft_sh
 
     " Use ";h" to add file header.
     au FileType sh,zsh nnoremap <buffer> <localleader>h ggO#!/usr/bin/env bash<cr># Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+aug end
+
+" }}}
+
+" Tmux --------------------- {{{
+
+aug ft_tmux
+    au!
+
+    au FileType tmux setl softtabstop=2 shiftwidth=2
+    au FileType tmux setl foldmethod=marker foldmarker={{{,}}}
+    au FileType tmux setl formatoptions-=o
+
+    " Use ";h" to add file header.
+    au FileType tmux nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
