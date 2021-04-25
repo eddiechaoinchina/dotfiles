@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: .zshrc
-# Last Change: 04/19/2021 05:10:08 PM +0800
+# Last Change: 04/25/21 15:44:50 +0800
 # Brief: My .zshrc File
 
 # Varibles -------------------------------------- {{{
@@ -48,7 +48,6 @@ export HBASE_HOME="/usr/share/hbase"
 alias lss='ls -A'
 # alias sob='source ~/.bashrc'
 alias soz='source ~/.zshrc'
-alias vvr='/usr/bin/v2rayL/v2rayLui'
 
 # }}}
 
