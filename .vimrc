@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 04/24/21 15:56:43 +0800
+" Last Change: 04/25/21 16:32:12 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -423,6 +423,8 @@ aug ft_c_abbrev
     au!
     au FileType c,cpp inorea <buffer> mm int main(int argc, char *argv[]) {<cr><cr><cr><cr>}<up><tab>return 0;<up><up><tab><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> ii #include <%><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> df #define %<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> td typedef %;<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> if if (%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> fi for (int i = 0; i < %; ++i) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> fj for (int j = 0; j < %; ++j) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
@@ -507,6 +509,7 @@ iab waht what
 iab teh  the
 iab tehn then
 
+iab <expr> hworld 'Hello World!'.EatNextWhiteChar()
 iab <expr> lhost 'http://127.0.0.1:'.EatNextWhiteChar()
 iab <expr> dts strftime("%x %X %z")
 
@@ -1216,52 +1219,92 @@ fu! s:PythonRunCurrentFile() "{{{
     exe bufwinnr("#") . "wincmd w"
 endfu "}}}
 
-" Brief: Show the result of "cl file.c/cpp" in a split window.
+" Brief: Show the result of "cl file.c" or "gcc file.c -o file" in a split window.
 fu! s:ClangRunCurrentFile() "{{{
-    let l:clang_command = "cl "
+    if g:os == 'Windows'
+        let l:clang_command = 'cl '
 
-    " Compiling...
-    let l:compile_msg = system(l:clang_command . bufname("%"))
+        " Compiling...
+        let l:compile_msg = system(l:clang_command . bufname('%'))
 
-    " Grab error message if any.
-    let l:error = []
-    for l:msg in split(l:compile_msg, '\n')
-        if l:msg =~ 'error'
-            call add(l:error, l:msg)
+        " Grab error message if any.
+        let l:error = []
+        for l:msg in split(l:compile_msg, '\n')
+            if l:msg =~ 'error'
+                call add(l:error, l:msg)
+            endif
+        endfor
+
+        " If any errors, display the error, otherwise the result.
+        if len(l:error) != 0
+            let l:result = l:error
+        else
+            " Get file name for concatenating.
+            let l:fname = substitute(bufname('%'), '\.\(c\|cpp\)$', '', '')
+
+            " Get the result of running.
+            let l:result = split(system('.\' . l:fname . '.exe'), '\n')
+
+            " Clean obsolete files generated during compiling.
+            call delete(l:fname . '.obj') | call delete(l:fname . '.exe')
         endif
-    endfor
 
-    " If any errors, display the error, otherwise the result.
-    if len(l:error) != 0
-        let l:result = l:error
+        " Create a new split, or switch to it if it exists.
+        if bufwinnr('__Clang_Result__') == -1
+            vsp __Clang_Result__
+        else
+            exe bufwinnr('__Clang_Result__') . 'wincmd w'
+        endif
+
+        " Clear the buffer, and set buffer type.
+        norm! ggdG
+        setl ft=clangresult
+        setl bt=nofile
+
+        " Show the result.
+        call append(0, l:result)
+
+        " Switch back to the original window.
+        exe bufwinnr('#') . 'wincmd w'
     else
         " Get file name for concatenating.
-        let l:fname = substitute(bufname("%"), '\.\(c\|cpp\)$', '', '')
+        let l:fname = substitute(bufname('%'), '\.\(c\|cpp\)$', '', '')
 
-        " Get the result of running.
-        let l:result = split(system('.\' . l:fname . '.exe'), '\n')
+        " Compiling...
+        let l:compile_msg = system('gcc '.bufname('%').' -o '.l:fname)
 
-        " Clean obsolete files generated during compiling.
-        call delete(l:fname . '.obj') | call delete(l:fname . '.exe')
+        " Grab error message if any.
+        let l:error = split(l:compile_msg, '\n')
+
+        " If any errors, display the error, otherwise the result.
+        if len(l:error) != 0
+            let l:result = l:error
+        else
+            " Get the result of running.
+            let l:result = split(system('./' . l:fname), '\n')
+
+            " Clean obsolete files generated during compiling.
+            call delete(l:fname)
+        endif
+
+        " Create a new split, or switch to it if it exists.
+        if bufwinnr('__Clang_Result__') == -1
+            vsp __Clang_Result__
+        else
+            exe bufwinnr('__Clang_Result__') . 'wincmd w'
+        endif
+
+        " Clear the buffer, and set buffer type.
+        norm! ggdG
+        setl ft=clangresult
+        setl bt=nofile
+
+        " Show the result.
+        call append(0, l:result)
+
+        " Switch back to the original window.
+        exe bufwinnr('#') . 'wincmd w'
     endif
-
-    " Create a new split, or switch to it if it exists.
-    if bufwinnr("__Clang_Result__") == -1
-        vsp __Clang_Result__
-    else
-        exe bufwinnr("__Clang_Result__") . "wincmd w"
-    endif
-
-    " Clear the buffer, and set buffer type.
-    norm! ggdG
-    setl ft=clangresult
-    setl bt=nofile
-
-    " Show the result.
-    call append(0, l:result)
-
-    " Switch back to the original window.
-    exe bufwinnr("#") . "wincmd w"
 endfu "}}}
 
 " Brief: Show the result of "java file.java" in a split window.
