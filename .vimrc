@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 04/25/21 16:32:12 +0800
+" Last Change: 04/25/21 17:34:05 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -332,7 +332,8 @@ if g:os == "Windows"
     set shellquote=\"
     set shellxquote=
 elseif g:os == "Linux"
-    set shell=/bin/bash
+    " set shell=/bin/bash
+    set shell=/usr/bin/fish
 endif
 
 " }}}
