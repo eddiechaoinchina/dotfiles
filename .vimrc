@@ -1,7 +1,7 @@
 " Author: Will Chao <nerdzzh@gmail.com>
-" Filename: _vimrc
-" Last Change: 2021/4/27 0:00:24 +0800
-" Brief: My _vimrc File
+" Filename: .vimrc
+" Last Change: 04/27/21 00:11:56 +0800
+" Brief: My .vimrc File
 
 " Preamble -------------------------------------- {{{
 
@@ -621,6 +621,7 @@ nnoremap <silent> <leader>sv :so $MYVIMRC<cr>:noh<cr>
 
 nnoremap <leader>eb :vsp ~/.bashrc<cr>
 nnoremap <leader>ec :vsp<cr>:CocConfig<cr>
+nnoremap <leader>ef :vsp $OMF_CONFIG/init.fish<cr>
 nnoremap <leader>et :vsp ~/.tmux.conf<cr>
 nnoremap <leader>ev :vsp $MYVIMRC<cr>
 nnoremap <leader>ez :vsp ~/.zshrc<cr>
@@ -815,6 +816,21 @@ aug ft_css
 
     " Use ";r" to compile scss into css.
     au FileType css,scss nnoremap <buffer> <localleader>r :call SassCompile()<cr>
+aug end
+
+" }}}
+
+" Fish --------------------- {{{
+
+aug ft_fish
+    au!
+
+    au FileType fish setl softtabstop=2 shiftwidth=2
+    au FileType fish setl foldmethod=marker foldmarker={{{,}}}
+    au FileType fish setl formatoptions-=o
+
+    " Use ";h" to add file header.
+    au FileType fish nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
