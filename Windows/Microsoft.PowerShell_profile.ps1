@@ -13,5 +13,4 @@ Remove-Item alias:diff -force # use gnu diff
 
 Remove-Item alias:cat -force
 Set-Alias cat bat # bat instead of cat
-
-Clear-Host # clear the greeting message before opening
+$env:BAT_THEME="Coldark-Dark"
