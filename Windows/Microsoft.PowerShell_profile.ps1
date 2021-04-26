@@ -9,7 +9,9 @@ Import-Module oh-my-posh
 
 Set-Theme robbyrussell
 
-Remove-Item alias:diff -force
-Remove-Item alias:cat -force
+Remove-Item alias:diff -force # use gnu diff
 
-Set-Alias cat bat
+Remove-Item alias:cat -force
+Set-Alias cat bat # bat instead of cat
+
+Clear-Host # clear the greeting message before opening
