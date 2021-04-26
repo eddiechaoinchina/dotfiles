@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: Microsoft.PowerShell_profile.ps1
-# Last Change: 2021/4/26 23:51:21 +0800
+# Last Change: 2021/4/27 0:17:29 +0800
 # Brief: My PowerShell_profile File
 
 # Preamble -------------------------------------- {{{
@@ -21,8 +21,6 @@
 $env:BAT_THEME="Coldark-Dark"
 
 # Initialize theme ------------------------------ {{{
-
-# Follow steps on ms webpage to use these modules.
 
 Import-Module posh-git
 Import-Module oh-my-posh
