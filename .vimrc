@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: _vimrc
-" Last Change: 04/25/21 17:34:05 +0800
+" Last Change: 2021/4/27 0:00:24 +0800
 " Brief: My _vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -327,7 +327,7 @@ endif
 " Shell -------------------- {{{
 
 if g:os == "Windows"
-    set shell=powershell.exe " Fuck you, powershell.
+    set shell=powershell.exe\ -nologo " Fuck you, powershell.
     set shellcmdflag=-c
     set shellquote=\"
     set shellxquote=
@@ -950,6 +950,17 @@ aug ft_markdown
 
     " Auto-update toc on save.
     au BufWritePre *.{md,markdown} call <SID>MarkdownTocUpdate()
+aug end
+
+" }}}
+
+" Ps1 ---------------------- {{{
+
+aug ft_ps1
+    au!
+    au FileType ps1 setl softtabstop=2 shiftwidth=2
+    au FileType ps1 setl foldmethod=marker foldmarker={{{,}}}
+    au FileType ps1 setl formatoptions-=o
 aug end
 
 " }}}
