@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 04/27/21 00:11:56 +0800
+" Last Change: 04/28/21 20:41:41 +0800
 " Brief: My .vimrc File
 
 " Preamble -------------------------------------- {{{
@@ -1345,11 +1345,11 @@ fu! s:JavaRunCurrentFile() "{{{
     " Compiling...
     call system(l:java_compile_command . bufname('%'))
 
-    " Cleaning...
-    call delete(l:fname . 'class')
-
     " Running...
     let l:result = system(l:java_run_command . l:fname)
+
+    " Cleaning...
+    call delete(l:fname . '.class')
 
     " Appeding...
     if bufwinnr('__Java_Result__') == -1
