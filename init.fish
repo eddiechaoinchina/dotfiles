@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 04/28/21 09:49:52 +0800
+# Last Change: 04/28/21 20:28:13 +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -28,10 +28,13 @@
 
 # Variables ------------------------------------- {{{
 
-# Path --------------------- {{{
+set --export PATH $PATH /home/zzh/anaconda3/bin /home/zzh/.local/bin # Python
 
-set --export PATH $PATH /home/zzh/anaconda3/bin /home/zzh/.local/bin
+set --export JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64 # Java
 
-# }}}
+# Terminal within VIM has a color problem...
+if set --query VIM_TERMINAL
+  set --export TERM screen-256color
+end
 
 # }}}
