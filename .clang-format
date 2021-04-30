@@ -1,7 +1,7 @@
 # Author: Will Chao <nerdzzh@gmail.com>
-# Filename: _clang-format
-# Last Change: 2021/2/25 22:41:18 +0800
-# Brief: My _clang-format File
+# Filename: .clang-format
+# Last Change: 04/30/21 20:36:15 +0800
+# Brief: My .clang-format File
 
 ---
 BasedOnStyle: LLVM
