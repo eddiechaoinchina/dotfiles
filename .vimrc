@@ -1,27 +1,30 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 04/30/21 20:35:07 +0800
+" Last Change: 5/1/21 8:42:04 PM +0800
 " Brief: My .vimrc File
+
+" "Nighttime is the guardian of creativity."
 
 " Preamble -------------------------------------- {{{
 
-" Make sure "node", "python", "gcc" are installed to make certain mappings work
-" properly. The version and bits of "python" must be compatible with "vim". When
-" this script is written, a possible solution would be "anaconda3-5.3.0" and
-" "gvim-8.1.2424".
+" Make sure "node", "python", "gcc" are all installed to make certain mappings
+" work properly. The version and bits of "python" must be compatible with
+" "vim".  When this script is written, a possible solution would be
+" "anaconda3-5.3.0" and "gvim-8.1.2424" if you are on Windows otherwise you
+" should't worry about it on Linux.
 "
-" It is weird that "apt-get" gives me a version without clipboard support, so
-" better install "vim-gtk" on debian-based os.
+" It is weird that Ubuntu is shipped with a version without clipboard support,
+" so better remove it and install "vim-gtk" on debian-based os.
 "
 " Plugins are installed under "~/.vim/bundle" or "~\vimfiles\bundle". Pathogen
-" makes it real easy and quick. Just clone the plugin repo and run ":Helptags"
-" and it is done. Some plugins may require more steps.
+" makes it real easy and quick to manage. Just clone the plugin repo and run
+" ":Helptags" and it is done. Some plugins may require more configuration.
 "
 " Some plugin-related variables need to be set before the plugin is loaded, so
-" they better be placed earlier in this file.
+" they should be placed earlier in this file.
 "
 " It is better to use one plugin for one functionality only, such as one for
-" formatting and another for completion. It is easy to manage this way.
+" formatting and another for completion. Easier to manage this way.
 "
 " Install "Pathogen" first. Bundles I use:
 " --------------------------------------------
@@ -39,19 +42,20 @@
 " tabular      | align things          | ;a
 " --------------------------------------------
 "
-" Be sure to install "ack" before cloning. It has a dependency on "Perl". Better
-" experienece with "ag" installed. "ack", "strawberryperl", "ag" can be easily
-" installed via "choco".
+" Be sure to install the "ack" package before using it. Better experienece to
+" have "ag" installed. Follow the instructions of installing "ack" and "ag"
+" according to the system.
 "
 " Both "ctrlp" and "ack" defaults to the directory of current file.
 "
 " Be sure to install "clang-format", "prettier" via "npm", install "autopep8",
-" "pycodestyle" via "pip", install "html-tidy" via "choco" to make "autoformat"
-" work normally. "clang-format" requires a ".clang-format" config file at root
-" directory.
+" "pycodestyle" via "pip", install "html-tidy" via "choco" or "tidy" via "apt"
+" to make "autoformat" work normally. "clang-format" requires ".clang-format"
+" file in the root directory.
 "
-" Be sure to have "node" installed for using "coc.nvim". Install "coc-json",
-" "coc-marketplace" with ":CocInstall". "coc-extensions" I use:
+" Be sure to have "node" installed for using "coc.nvim". Install firstly the
+" "coc-marketplace" with ":CocInstall", then open it with ",cm" to install
+" others. Here are the "coc-extensions" I use:
 " --------------------------------------------
 " coc-clangd                | .c,.cpp
 " coc-css                   | .css,.scss
@@ -68,38 +72,40 @@
 " Filetype-specific abbreviations are put separately in section "Abbreviations"
 " instead of "FileType-specific Settings" cause it seems chunky if it was there.
 "
-" Huge thanks go to @stevelosh and his amazing "learnvimscriptthehardway" book
-" for teaching me to customize this editor and enhance user experienece sooooo
-" much. Best regards.
+" Huge thanks to @stevelosh and his amazing "learnvimscriptthehardway" crash
+" course for teaching me to customize this editor and enhance user experienece
+" sooooo much.
+"
+" This is Will here in 2021. Hope you healthy and joyful. Best regards.
 
 " }}}
 
 " Variables ------------------------------------- {{{
 
 " Define "g:os" using feature detection, thanks romainl.
-if !exists("g:os")
-    if has("win64") || has("win32") || has("win16")
-        let g:os = "Windows"
+if !exists('g:os')
+    if has('win64') || has('win32') || has('win16')
+        let g:os = 'Windows'
     else
         let g:os = substitute(system('uname'), '\n', '', '')
     endif
 endif
 
 " Just in case it's not by default under home directory.
-if has("win64") || has("win32") || has("win16")
-    let $MYVIMRC = "$HOME/_vimrc"
+if has('win64') || has('win32') || has('win16')
+    let $MYVIMRC = '$HOME/_vimrc'
 else
-    let $MYVIMRC = "$HOME/.vimrc"
+    let $MYVIMRC = '$HOME/.vimrc'
 endif
 
 " Leader keys, my preferences.
-let mapleader = ","
-let maplocalleader = ";"
+let mapleader = ','
+let maplocalleader = ';'
 
 " This enables folding feature for markdown files if you are using the latest
 " version of Vim, for some reason it is not documented, yet it is indeed
 " a built-in feature.
-let g:markdown_folding=1
+let g:markdown_folding = 1
 
 " This defines pairs that need to be deleted with one key stroke, achieved with
 " function BetterBS(). "#" is the cursor's position. Thanks Zorzi.
@@ -137,12 +143,12 @@ fu! s:AckMotion(type) abort
     let reg_save = @"
 
     if a:type ==# 'v'
-        silent exe "norm! `<" . a:type . "`>y"
+        silent exe 'norm! `<' . a:type . '`>y'
     elseif a:type ==# 'char'
-        silent exe "norm! `[v`]y"
+        silent exe 'norm! `[v`]y'
     endif
 
-    exe "norm! :Ack! --literal " . shellescape(@") . "\<cr>"
+    exe 'norm! :Ack! --literal ' . shellescape(@") . '\<cr>'
 
     let @" = reg_save
 endfu
@@ -159,7 +165,7 @@ let g:ackprg='ag --smart-case --nogroup --nocolor --column'
 
 " Autoformat --------------- {{{
 
-let g:formatdef_prettier='"prettier --stdin-filepath ".expand("%:p").(&textwidth ? " --print-width ".&textwidth : "")." --tab-width ".shiftwidth()." --single-quote"'
+let g:formatdef_prettier=''prettier --stdin-filepath '.expand('%:p').(&textwidth ? ' --print-width '.&textwidth : '').' --tab-width '.shiftwidth().' --single-quote''
 
 let g:formatters_c          = ['clangformat']
 let g:formatters_cpp        = ['clangformat']
@@ -301,11 +307,11 @@ silent! unmap ]%
 set backup                                     " enable backups
 set noswapfile                                 " it's 2021, Vim.
 
-if g:os == "Windows"
+if g:os == 'Windows'
     set undodir  =~\vimfiles\tmp\undo\\        " undo files
     set backupdir=~\vimfiles\tmp\backup\\      " backups
     set directory=~\vimfiles\tmp\swap\\        " swap files
-elseif g:os == "Linux"
+elseif g:os == 'Linux'
     set undodir  =~/.vim/tmp/undo//            " undo files
     set backupdir=~/.vim/tmp/backup//          " backups
     set directory=~/.vim/tmp/swap//            " swap files
@@ -313,25 +319,25 @@ endif
 
 " Make those folders automatically if they don't already exist.
 if !isdirectory(expand(&undodir))
-    call mkdir(expand(&undodir), "p")
+    call mkdir(expand(&undodir), 'p')
 endif
 if !isdirectory(expand(&backupdir))
-    call mkdir(expand(&backupdir), "p")
+    call mkdir(expand(&backupdir), 'p')
 endif
 if !isdirectory(expand(&directory))
-    call mkdir(expand(&directory), "p")
+    call mkdir(expand(&directory), 'p')
 endif
 
 " }}}
 
 " Shell -------------------- {{{
 
-if g:os == "Windows"
+if g:os == 'Windows'
     set shell=powershell.exe\ -nologo " Fuck you, powershell.
     set shellcmdflag=-c
     set shellquote=\"
     set shellxquote=
-elseif g:os == "Linux"
+elseif g:os == 'Linux'
     " set shell=/bin/bash
     set shell=/usr/bin/fish
 endif
@@ -512,7 +518,7 @@ iab tehn then
 
 iab <expr> hworld 'Hello World!'.EatNextWhiteChar()
 iab <expr> lhost 'http://127.0.0.1:'.EatNextWhiteChar()
-iab <expr> dts strftime("%x %X %z")
+iab <expr> dts strftime('%x %X %z')
 
 " }}}
 
@@ -786,7 +792,7 @@ aug ft_c
     au FileType c,cpp setl foldmethod=marker foldmarker={,}
 
     " Use ";h" to add file header.
-    au FileType c,cpp nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";r" to run without args.
     au FileType c,cpp nnoremap <buffer> <localleader>r :call <SID>ClangRunCurrentFile()<cr>
@@ -806,7 +812,7 @@ aug ft_css
     au FileType css,scss setl formatoptions-=o
 
     " Use ";h" to add file header.
-    au FileType css,scss nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType css,scss nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";s" to add semicolon to eol.
     au FileType css,scss nnoremap <buffer> <localleader>s A;<esc>
@@ -830,7 +836,7 @@ aug ft_fish
     au FileType fish setl formatoptions-=o
 
     " Use ";h" to add file header.
-    au FileType fish nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+    au FileType fish nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
@@ -846,7 +852,7 @@ aug ft_html
     au FileType html inoremap <buffer> < <><left>
 
     " Use ";h" to add file header.
-    au FileType html nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType html nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";f" to fold current tag.
     au FileType html nnoremap <buffer> <localleader>f Vatzf
@@ -867,7 +873,7 @@ aug ft_java
     au FileType java setl foldmethod=marker foldmarker={,}
 
     " Use ";h" to add file header.
-    au FileType java nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType java nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";r" to run without args.
     au FileType java nnoremap <buffer> <localleader>r :call <SID>JavaRunCurrentFile()<cr>
@@ -894,7 +900,7 @@ aug ft_javascript
     au FileType javascript nnoremap <buffer> <localleader>f :call JSDocAdd()<cr>
 
     " Use ";h" to add file header.
-    au FileType javascript nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";r" to run without args.
     au FileType javascript nnoremap <buffer> <localleader>r :call <SID>JavascriptRunCurrentFile()<cr>
@@ -921,7 +927,6 @@ aug ft_markdown
     au FileType markdown setl softtabstop=2 shiftwidth=2
     au FileType markdown setl comments=b:*,b:-,b:+,n:>
     au FileType markdown setl formatoptions+=r
-    au FileType markdown setl foldlevel=3
 
     au FileType markdown inorea <buffer> h1 #
     au FileType markdown inorea <buffer> h2 ##
@@ -935,7 +940,7 @@ aug ft_markdown
     au FileType markdown inoremap <buffer> * **<left>
 
     " Use ";h" to add file header.
-    au FileType markdown nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType markdown nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";t" to generate toc.
     au FileType markdown nnoremap <buffer> <localleader>t :call <SID>MarkdownTocGenerate()<cr>
@@ -947,8 +952,8 @@ aug ft_markdown
     au FileType markdown nnoremap <buffer> <localleader>j :call <SID>MarkdownJumpToAnchor()<cr>
 
     " Use "ih" and "ah" to move "inside" and "around" heading, thanks Steve.
-    au FileType markdown onoremap <buffer> ih :<c-u>execute "norm! ?^#\\{1,6} \r:nohlsearch\rgn\elv$h"<cr>
-    au FileType markdown onoremap <buffer> ah :<c-u>execute "norm! ?^#\\{1,6} \r:nohlsearch\rv$h"<cr>
+    au FileType markdown onoremap <buffer> ih :<c-u>exe 'norm! ?^#\\{1,6} \r:nohlsearch\rgn\elv$h'<cr>
+    au FileType markdown onoremap <buffer> ah :<c-u>exe 'norm! ?^#\\{1,6} \r:nohlsearch\rv$h'<cr>
 
     " Use ";b" to make bold, ";i" to make italic, ";d" to cross out.
     au FileType markdown nnoremap <buffer> <localleader>b mzviw<esc>a**<esc>hbi**<esc>`z
@@ -994,7 +999,7 @@ aug ft_python
     au FileType python nnoremap <buffer> <localleader>f :let _s=@/<cr>?def<cr>:let @/=_s<cr>o"""%<cr><cr>Args:<cr><cr>Return:<c-d><cr><cr>"""<c-d><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";h" to add file header.
-    au FileType python nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+    au FileType python nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 
     " Use ";r" to run without args.
     au FileType python nnoremap <buffer> <localleader>r :call <SID>PythonRunCurrentFile()<cr>
@@ -1021,7 +1026,7 @@ aug ft_sh
     au FileType sh,zsh setl formatoptions-=o
 
     " Use ";h" to add file header.
-    au FileType sh,zsh nnoremap <buffer> <localleader>h ggO#!/usr/bin/env bash<cr># Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+    au FileType sh,zsh nnoremap <buffer> <localleader>h ggO#!/usr/bin/env bash<cr># Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
@@ -1036,7 +1041,7 @@ aug ft_tmux
     au FileType tmux setl formatoptions-=o
 
     " Use ";h" to add file header.
-    au FileType tmux nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+    au FileType tmux nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
@@ -1055,7 +1060,7 @@ aug ft_vim
     au FileType vim nnoremap <buffer> <localleader>f :let _s=@/<cr>?fu<cr>:let @/=_s<cr>O" Brief: %<cr><cr>Args: <cr><cr>Return: <esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";h" to add file header.
-    au FileType vim nnoremap <buffer> <localleader>h ggO" Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+    au FileType vim nnoremap <buffer> <localleader>h ggO" Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
@@ -1093,7 +1098,7 @@ aug ft_xml
     au FileType xml inoremap <buffer> < <><left>
 
     " Use ";h" to add file header.
-    au FileType xml nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType xml nnoremap <buffer> <localleader>h ggO<!--<cr><c-d>Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: %<cr>--><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";f" to fold current tag.
     au FileType xml nnoremap <buffer> <localleader>f Vatzf
@@ -1113,7 +1118,7 @@ aug ft_yaml
     au FileType yaml setl formatoptions-=o
 
     " Use ";h" to add file header.
-    au FileType yaml nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand("%:p:t")<cr><cr>Last Change: <c-r>=strftime("%x %X %z")<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+    au FileType yaml nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
@@ -1141,14 +1146,14 @@ fu! s:BetterBS() "{{{
         let l:regex = substitute(escape(l:couple, '/\^$*.[~'), '#', '\\%#', '')
 
         if search(l:regex, 'n')
-            let l:out = repeat("\<BS>", len(matchstr(l:couple, '^.\{-}\ze#')))
-            let l:out .= repeat("\<DEL>", len(matchstr(l:couple, '#\zs.\{-}$')))
+            let l:out = repeat('\<BS>', len(matchstr(l:couple, '^.\{-}\ze#')))
+            let l:out .= repeat('\<DEL>', len(matchstr(l:couple, '#\zs.\{-}$')))
 
             return l:out
         endif
     endfor
 
-    return "\<BS>"
+    return '\<BS>'
 endfu "}}}
 
 " Brief: Auto indent after pressing return between tags.
@@ -1167,14 +1172,14 @@ fu! s:BetterCR() "{{{
         if search(l:regex, 'n')
             " "autoindent" option does not remember indent of a blank line , so
             " we have to repeat the indent of current line and +1.
-            let l:out = "\<CR>\<CR>\<UP>"
+            let l:out = '\<CR>\<CR>\<UP>'
             let l:out .= repeat(' ', indent('.') + &shiftwidth)
 
             return l:out
         endif
     endfor
 
-    return "\<CR>"
+    return '\<CR>'
 endfu "}}}
 
 " }}}
@@ -1197,16 +1202,16 @@ aug end
 
 " Brief: Show the result of "node file.js" in a split window.
 fu! s:JavascriptRunCurrentFile() "{{{
-    let l:js_command = "node "
+    let l:js_command = 'node '
 
     " Get the result of running.
-    let l:result = system(l:js_command . bufname("%"))
+    let l:result = system(l:js_command . bufname('%'))
 
     " Create a new split, or switch to it if it exists.
-    if bufwinnr("__JS_Result__") == -1
+    if bufwinnr('__JS_Result__') == -1
         vsp __JS_Result__
     else
-        exe bufwinnr("__JS_Result__") . "wincmd w"
+        exe bufwinnr('__JS_Result__') . 'wincmd w'
     endif
 
     " Clear the buffer, and set buffer type.
@@ -1218,21 +1223,21 @@ fu! s:JavascriptRunCurrentFile() "{{{
     call append(0, split(l:result, '\m\n'))
 
     " Switch back to the original window.
-    exe bufwinnr("#") . "wincmd w"
+    exe bufwinnr('#') . 'wincmd w'
 endfu "}}}
 
 " Brief: Show the result of "python file.py" in a split window.
 fu! s:PythonRunCurrentFile() "{{{
-    let l:python_command = "python "
+    let l:python_command = 'python '
 
     " Get the result of running.
-    let l:result = system(l:python_command . bufname("%"))
+    let l:result = system(l:python_command . bufname('%'))
 
     " Create a new split, or switch to it if it exists.
-    if bufwinnr("__Python_Result__") == -1
+    if bufwinnr('__Python_Result__') == -1
         vsp __Python_Result__
     else
-        exe bufwinnr("__Python_Result__") . "wincmd w"
+        exe bufwinnr('__Python_Result__') . 'wincmd w'
     endif
 
     " Clear the buffer, and set buffer type.
@@ -1244,7 +1249,7 @@ fu! s:PythonRunCurrentFile() "{{{
     call append(0, split(l:result, '\m\n'))
 
     " Switch back to the original window.
-    exe bufwinnr("#") . "wincmd w"
+    exe bufwinnr('#') . 'wincmd w'
 endfu "}}}
 
 " Brief: Show the result of "gcc -o file file.c" in a split window.
@@ -1290,8 +1295,8 @@ endfu "}}}
 
 " Brief: Show the result of "java file.java" in a split window.
 fu! s:JavaRunCurrentFile() "{{{
-    let l:java_compile_command = "javac "
-    let l:java_run_command = "java "
+    let l:java_compile_command = 'javac '
+    let l:java_run_command = 'java '
 
     let l:fname = substitute(bufname('%'), '\.java$', '', '')
 
@@ -1372,7 +1377,7 @@ fu! s:MarkdownTocGenerate() "{{{
 
     for l:headingName in l:headingNames
         let l:headingLink = tr(l:headingName, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')
-        let l:headingLink = substitute(l:headingLink, "\\%#=0[^[:alnum:]\u00C0-\u00FF\u0400-\u04ff\u4e00-\u9fbf\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF _-]", "", "g")
+        let l:headingLink = substitute(l:headingLink, '\\%#=0[^[:alnum:]\u00C0-\u00FF\u0400-\u04ff\u4e00-\u9fbf\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF _-]', '', 'g')
         let l:headingLink = substitute(l:headingLink, ' ', '-', 'g')
 
         call add(l:headingLinks, l:headingLink)
@@ -1458,7 +1463,7 @@ fu! s:MarkdownJumpToAnchor() "{{{
 
     for l:headingName in l:headingNames
         let l:headingLink = tr(l:headingName, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')
-        let l:headingLink = substitute(l:headingLink, "\\%#=0[^[:alnum:]\u00C0-\u00FF\u0400-\u04ff\u4e00-\u9fbf\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF _-]", "", "g")
+        let l:headingLink = substitute(l:headingLink, '\\%#=0[^[:alnum:]\u00C0-\u00FF\u0400-\u04ff\u4e00-\u9fbf\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF _-]', '', 'g')
         let l:headingLink = substitute(l:headingLink, ' ', '-', 'g')
 
         call add(l:headingLinks, l:headingLink)
@@ -1506,8 +1511,8 @@ fu! s:DiffUnsavedChanges() "{{{
     hi myDiffBefore ctermfg=red
     hi myDiffAfter  ctermfg=green
 
-    syn match myDiffBefore "^-.*$"
-    syn match myDiffAfter  "^+.*$"
+    syn match myDiffBefore '^-.*$'
+    syn match myDiffAfter  '^+.*$'
 endfu "}}}
 
 " Brief: Turn on highlight in diff window.
@@ -1601,22 +1606,22 @@ endfu "}}}
 fu! UpdateTimestamps() "{{{
     if &modified
         " Save cursor position.
-        let save_cursor = getpos(".")
+        let save_cursor = getpos('.')
 
         " Substitution applies to the first 20 lines.
-        let line_range  = min([20, line("$")])
+        let line_range  = min([20, line('$')])
 
         " "keepjumps" excludes timestamp position from jump list.
-        keepjumps exe '1,' . line_range . 's@^\(.\{,10}Last Change: \).*@\1' . strftime("%x %X %z") . '@e'
+        keepjumps exe '1,' . line_range . 's@^\(.\{,10}Last Change: \).*@\1' . strftime('%x %X %z') . '@e'
 
         " Remove timestamp search pattern from search history.
-        call histdel("search", -1)
+        call histdel('search', -1)
 
         " Restore last search pattern.
-        let @/ = histget("search", -1)
+        let @/ = histget('search', -1)
 
         " Restore cursor position.
-        call setpos(".", save_cursor)
+        call setpos('.', save_cursor)
     endif
 endfu "}}}
 
@@ -1628,7 +1633,7 @@ fu! JSDocAdd() "{{{
 
     let l:line = getline('.')
     let l:indent = indent('.')
-    let l:space = repeat(" ", l:indent)
+    let l:space = repeat(' ', l:indent)
 
     let l:flag = 1
     if l:line =~ l:pat1
@@ -1644,14 +1649,14 @@ fu! JSDocAdd() "{{{
     if l:flag
         let l:lines = []
         let l:desc = input('Description: ')
-        let l:funcName = substitute(l:line, l:regex, '\1', "g")
+        let l:funcName = substitute(l:line, l:regex, '\1', 'g')
         call add(l:lines, l:space. '/**')
         call add(l:lines, l:space . ' * ' . l:funcName .'() ' . l:desc)
-        let l:arg = substitute(l:line, l:regex, '\2', "g")
+        let l:arg = substitute(l:line, l:regex, '\2', 'g')
         let l:args = split(l:arg, '\s*,\s*')
         call add(l:lines, l:space . ' *')
         for l:arg in l:args
-            call add(l:lines, l:space . ' * @param {...} ' . l:arg . " -")
+            call add(l:lines, l:space . ' * @param {...} ' . l:arg . ' -')
         endfor
         call add(l:lines, l:space . ' *')
         call add(l:lines, l:space . ' * @return {...}')
@@ -1711,7 +1716,7 @@ aug line_return
 
     " Make sure Vim returns to the same line when you reopen a file.
     au BufReadPost *
-        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \ if line(''\"') > 0 && line(''\"') <= line('$') |
         \     exe 'norm! g`"zvzz' |
         \ endif
 aug end
