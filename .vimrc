@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 5/1/21 8:42:04 PM +0800
+" Last Change: 5/1/21 9:05:09 PM +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -165,7 +165,7 @@ let g:ackprg='ag --smart-case --nogroup --nocolor --column'
 
 " Autoformat --------------- {{{
 
-let g:formatdef_prettier=''prettier --stdin-filepath '.expand('%:p').(&textwidth ? ' --print-width '.&textwidth : '').' --tab-width '.shiftwidth().' --single-quote''
+let g:formatdef_prettier="'prettier --stdin-filepath '.expand('%:p').(&textwidth ? ' --print-width '.&textwidth : '').' --tab-width '.shiftwidth().' --single-quote'"
 
 let g:formatters_c          = ['clangformat']
 let g:formatters_cpp        = ['clangformat']
@@ -1716,7 +1716,7 @@ aug line_return
 
     " Make sure Vim returns to the same line when you reopen a file.
     au BufReadPost *
-        \ if line(''\"') > 0 && line(''\"') <= line('$') |
+        \ if line("'\"") > 0 && line("'\"") <= line('$') |
         \     exe 'norm! g`"zvzz' |
         \ endif
 aug end
