@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 5/1/21 9:05:09 PM +0800
+" Last Change: 5/2/21 10:02:23 PM +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -1146,14 +1146,14 @@ fu! s:BetterBS() "{{{
         let l:regex = substitute(escape(l:couple, '/\^$*.[~'), '#', '\\%#', '')
 
         if search(l:regex, 'n')
-            let l:out = repeat('\<BS>', len(matchstr(l:couple, '^.\{-}\ze#')))
-            let l:out .= repeat('\<DEL>', len(matchstr(l:couple, '#\zs.\{-}$')))
+            let l:out = repeat("\<BS>", len(matchstr(l:couple, '^.\{-}\ze#')))
+            let l:out .= repeat("\<DEL>", len(matchstr(l:couple, '#\zs.\{-}$')))
 
             return l:out
         endif
     endfor
 
-    return '\<BS>'
+    return "\<BS>"
 endfu "}}}
 
 " Brief: Auto indent after pressing return between tags.
@@ -1172,14 +1172,14 @@ fu! s:BetterCR() "{{{
         if search(l:regex, 'n')
             " "autoindent" option does not remember indent of a blank line , so
             " we have to repeat the indent of current line and +1.
-            let l:out = '\<CR>\<CR>\<UP>'
+            let l:out = "\<CR>\<CR>\<UP>"
             let l:out .= repeat(' ', indent('.') + &shiftwidth)
 
             return l:out
         endif
     endfor
 
-    return '\<CR>'
+    return "\<CR>"
 endfu "}}}
 
 " }}}
