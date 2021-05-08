@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 04/28/21 20:28:13 +0800
+# Last Change: 05/06/21 20:30:57 +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -28,9 +28,12 @@
 
 # Variables ------------------------------------- {{{
 
-set --export PATH $PATH /home/zzh/anaconda3/bin /home/zzh/.local/bin # Python
+set --export --global PATH $PATH /home/zzh/anaconda3/bin /home/zzh/.local/bin # Python
 
-set --export JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64 # Java
+set --export --global JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64 # Java
+
+# Make FZF search including hidden files...
+set --export --global FZF_DEFAULT_COMMAND 'ag --hidden --ignore .git -g ""'
 
 # Terminal within VIM has a color problem...
 if set --query VIM_TERMINAL
@@ -38,3 +41,5 @@ if set --query VIM_TERMINAL
 end
 
 # }}}
+
+alias sofish='source $OMF_CONFIG/init.fish'

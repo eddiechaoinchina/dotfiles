@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 5/2/21 10:02:23 PM +0800
+" Last Change: 05/08/21 17:17:01 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -185,11 +185,6 @@ aug ft_jsonc
     au!
     au FileType jsonc noremap <buffer> <F3> :Autoformat json<cr>
     au FileType jsonc inoremap <buffer> <F3> <esc>:Autoformat json<cr>
-aug end
-
-aug ft_clangformat
-    au!
-    au BufNewFile,BufRead _clang-format,.clang-format setl ft=yaml
 aug end
 
 " }}}
