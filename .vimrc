@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/08/21 17:17:01 +0800
+" Last Change: 05/09/21 09:52:28 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -61,6 +61,7 @@
 " coc-css                   | .css,.scss
 " coc-html                  | .html
 " coc-html-css-support      |
+" coc-java                  | .java
 " coc-json                  | .json,.jsonc
 " coc-pyright               | .py
 " coc-tsserver              | .js
@@ -68,6 +69,12 @@
 " --------------------------------------------
 "
 " Install "clangd" for "coc-clangd" to work.
+"
+" "jdt" server may crash when opening it. Make sure "JAVA_HOME" env variable is
+" set correctly, and download Version 57 of JDT Language Server from
+" "https://download.eclipse.org/jdtls/milestones/0.57.0/", then replace any dir
+" or file under "~/.config/coc/extensions/coc-java-data/server" with those from
+" the extracted folder above.
 "
 " Filetype-specific abbreviations are put separately in section "Abbreviations"
 " instead of "FileType-specific Settings" cause it seems chunky if it was there.
@@ -77,6 +84,8 @@
 " sooooo much.
 "
 " This is Will here in 2021. Hope you healthy and joyful. Best regards.
+"
+" "Mamba never out."
 
 " }}}
 
