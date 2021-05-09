@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/09/21 09:52:28 +0800
+" Last Change: 05/09/21 22:16:47 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -27,20 +27,30 @@
 " formatting and another for completion. Easier to manage this way.
 "
 " Install "Pathogen" first. Bundles I use:
-" --------------------------------------------
-" ack          | faster searching      | ,a
-" autoformat   | formatting tool       | <f3>
-" coc.nvim     | conquer completion    |
-" commentary   | comment stuff out     | ;c
-" ctrl-p       | fuzzy file finder     | ,,
-" emmet        | html,css abbrevs      | <c-e>
-" fugitive     | git integration       |
-" gitgutter    | git diff sign         |
-" nerdtree     | tree file explorer    | <f2>
-" polyglot     | syntax highlighting   |
-" supertab     | insert completion     |
-" tabular      | align things          | ;a
-" --------------------------------------------
+" ----------------------------------------------
+" ack           | faster searching       | ,a
+" autoformat    | formatting tool        | <f3>
+" coc.nvim      | conquer completion     |
+" commentary    | comment stuff out      | ;c
+" ctrl-p        | fuzzy file finder      | ,,
+" emmet         | html,css abbrevs       | <c-e>
+" fugitive      | git integration        |
+" gitgutter     | git diff sign          |
+" nerdtree      | tree file explorer     | <f2>
+" polyglot      | syntax highlighting    |
+" supertab      | insert completion      |
+" tabular       | align things           | ;a
+" ----------------------------------------------
+"
+" There are plugins available to enhance nerdtree experience, too.
+" ----------------------------------------------
+" vim-devicons                  | filetype icons
+" nerdtree-git-plugin           | git markers
+" vim-nerdtree-syntax-highlight | more highlight
+" ----------------------------------------------
+"
+" Plugins above require a patched font for additional glyphs. I am currently
+" using "hack" nerd font.
 "
 " Be sure to install the "ack" package before using it. Better experienece to
 " have "ag" installed. Follow the instructions of installing "ack" and "ag"
@@ -56,17 +66,17 @@
 " Be sure to have "node" installed for using "coc.nvim". Install firstly the
 " "coc-marketplace" with ":CocInstall", then open it with ",cm" to install
 " others. Here are the "coc-extensions" I use:
-" --------------------------------------------
-" coc-clangd                | .c,.cpp
-" coc-css                   | .css,.scss
-" coc-html                  | .html
-" coc-html-css-support      |
-" coc-java                  | .java
-" coc-json                  | .json,.jsonc
-" coc-pyright               | .py
-" coc-tsserver              | .js
-" coc-vetur                 | .vue
-" --------------------------------------------
+" ----------------------------------------------
+" coc-clangd                      | .c,.cpp
+" coc-css                         | .css,.scss
+" coc-html                        | .html
+" coc-html-css-support            |
+" coc-java                        | .java
+" coc-json                        | .json,.jsonc
+" coc-pyright                     | .py
+" coc-tsserver                    | .js
+" coc-vetur                       | .vue
+" ----------------------------------------------
 "
 " Install "clangd" for "coc-clangd" to work.
 "
@@ -168,13 +178,13 @@ endfu
 nnoremap <leader>a :Ack!<space>
 
 " Use "ag" as searching tool, better install it first.
-let g:ackprg='ag --smart-case --nogroup --nocolor --column'
+let g:ackprg = 'ag --smart-case --nogroup --nocolor --column'
 
 " }}}
 
 " Autoformat --------------- {{{
 
-let g:formatdef_prettier="'prettier --stdin-filepath '.expand('%:p').(&textwidth ? ' --print-width '.&textwidth : '').' --tab-width '.shiftwidth().' --single-quote'"
+let g:formatdef_prettier = "'prettier --stdin-filepath '.expand('%:p').(&textwidth ? ' --print-width '.&textwidth : '').' --tab-width '.shiftwidth().' --single-quote'"
 
 let g:formatters_c          = ['clangformat']
 let g:formatters_cpp        = ['clangformat']
@@ -222,14 +232,11 @@ xmap ;c <Plug>Commentary
 nnoremap <leader>. :CtrlPTag<cr>
 nnoremap <leader>E :CtrlP ../
 
-let g:ctrlp_map='<leader>,'
-let g:ctrlp_cmd='CtrlP'
-
-" Don't jump to it if already opened, open a new instance instead.
-let g:ctrlp_switch_buffer=0
-
-let g:ctrlp_match_window='bottom,order:ttb' . ',max:20'
-let g:ctrlp_working_path_mode='ra'
+let g:ctrlp_map               = '<leader>,'
+let g:ctrlp_cmd               = 'CtrlP'
+let g:ctrlp_match_window      = 'bottom,order:ttb' . ',max:20'
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_switch_buffer     = 0
 
 " }}}
 
@@ -238,8 +245,8 @@ let g:ctrlp_working_path_mode='ra'
 au FileType html,css,javascript,vue imap <buffer> <c-e> <c-y>,
 au FileType html,css,javascript,vue imap <buffer> <c-s> <c-y>n
 
-let g:user_emmet_mode='i'
-let g:user_emmet_install_global=0
+let g:user_emmet_mode           = 'i'
+let g:user_emmet_install_global = 0
 
 au FileType html,css,javascript,vue if exists(':EmmetInstall') | exe 'EmmetInstall' | endif
 
@@ -271,18 +278,22 @@ aug filetype_nerdtree
     au FileType nerdtree setl nolist
 aug end
 
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName    = 1
+let g:NERDTreePatternMatchHighlightFullName  = 1
+
 " }}}
 
 " Polyglot ----------------- {{{
 
-let g:polyglot_disabled=['autoindent']
+let g:polyglot_disabled = ['autoindent']
 
 " }}}
 
 " Supertab ----------------- {{{
 
-let g:SuperTabDefaultCompletionType='<c-n>'
-let g:SuperTabLongestHighlight=1
+let g:SuperTabDefaultCompletionType = '<c-n>'
+let g:SuperTabLongestHighlight      = 1
 
 " }}}
 
@@ -354,8 +365,8 @@ set statusline=                                " Thanks Tassos!
 set statusline+=\ %n\                          " buffer number
 set statusline+=%{&ff}                         " file format
 set statusline+=%y                             " file type
-set statusline+=\ %<%F                         " full path
-set statusline+=%1*%m%*\                       " modified flag
+set statusline+=\ %<%F\                        " full path
+set statusline+=%1*%m%*                        " modified flag
 set statusline+=%2*%{FugitiveStatusline()}%*   " git branch
 set statusline+=%=%5l                          " current line
 set statusline+=/%L                            " total lines
