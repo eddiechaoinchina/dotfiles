@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/09/21 22:16:47 +0800
+" Last Change: 05/10/21 17:41:39 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -348,7 +348,7 @@ endif
 " Shell -------------------- {{{
 
 if g:os == 'Windows'
-    set shell=powershell.exe\ -nologo " Fuck you, powershell.
+    set shell=pwsh.exe " Fuck you, powershell.
     set shellcmdflag=-c
     set shellquote=\"
     set shellxquote=
