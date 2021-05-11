@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 05/09/21 22:18:33 +0800
+# Last Change: 05/11/21 16:26:26 +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -28,12 +28,18 @@
 
 # Variables ------------------------------------- {{{
 
-set -xg PATH $PATH /home/zzh/anaconda3/bin /home/zzh/.local/bin # Python
+if test -d $HOME/anaconda3 # Python
+  set -x PATH $PATH $HOME/anaconda3/bin $HOME/.local/bin
+end
 
-set -xg JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64 # Java
+if type -q java # Java
+  set -x JAVA_HOME (readlink -f (which java))
+end
 
 # Make FZF search including hidden files...
-set -xg FZF_DEFAULT_COMMAND 'ag --hidden --ignore .git -g ""'
+if type -q fzf
+  set -x FZF_DEFAULT_COMMAND 'ag --hidden --ignore .git -g ""'
+end
 
 # Terminal within VIM has a color problem...
 if set -q VIM_TERMINAL
@@ -42,10 +48,23 @@ end
 
 # }}}
 
-alias sofish='source $OMF_CONFIG/init.fish'
+# Aliases --------------------------------------- {{{
+
+if test -e $OMF_CONFIG/init.fish
+  alias sofish='source $OMF_CONFIG/init.fish'
+end
 
 if type -q exa
   alias ls='exa --icons'
   alias ll='exa --icons --long --group --links'
   alias la='exa --icons --long --group --links --all'
 end
+
+if type -q git
+  alias gs='git status'
+  alias ga='git add'
+  alias gci='git commit -m'
+  alias gp='git push'
+end
+
+# }}}
