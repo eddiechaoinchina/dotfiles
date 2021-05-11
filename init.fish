@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 05/11/21 17:57:42 +0800
+# Last Change: 05/11/21 19:06:24 +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -66,6 +66,7 @@ end
 
 if type -q git
   alias gs='git status'
+  alias gpu='git pull'
   alias ga='git add'
   alias gci='git commit -m'
   alias gp='git push'
