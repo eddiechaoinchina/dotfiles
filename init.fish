@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 05/11/21 16:26:26 +0800
+# Last Change: 05/11/21 17:57:42 +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -34,6 +34,10 @@ end
 
 if type -q java # Java
   set -x JAVA_HOME (readlink -f (which java))
+end
+
+if test -d /home/linuxbrew # Homebrew
+  eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 end
 
 # Make FZF search including hidden files...
