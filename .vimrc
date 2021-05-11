@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/10/21 17:41:39 +0800
+" Last Change: 05/11/21 16:56:42 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -851,7 +851,7 @@ aug ft_fish
     au FileType fish setl formatoptions-=o
 
     " Use ";h" to add file header.
-    au FileType fish nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+    au FileType fish nnoremap <buffer> <localleader>h ggO#!/usr/bin/env fish<cr> Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
