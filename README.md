@@ -2,7 +2,7 @@
 
 **Step One** is to change software mirror after installation.
 
-**Step Two** is to install several packages that I cannot live without.
+**Step Two** is to install necessary packages.
 
 > git, curl, gcc, net-tools, ack-grep, silversearcher-ag, nodejs, npm, fzf, fish, tmux, vim-gtk, openjdk-8-jdk
 
