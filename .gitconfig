@@ -4,6 +4,7 @@
 [ghq]
 	root = ~/.ghq
 [alias]
+    d = diff
     ba = branch -a
     br = branch
     ca = commit -a
