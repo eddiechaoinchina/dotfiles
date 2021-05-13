@@ -6,7 +6,7 @@
 
 > git, curl, gcc, net-tools, ack-grep, silversearcher-ag, nodejs, npm, fzf, fish, tmux, vim-gtk, openjdk-8-jdk
 
-**Step Three** is to config git, clone this repo, and run setup.sh.
+**Step Three** is to config git, install homebrew and brew install ghq (plus config ghq.root), then ghq get this repo and run setup.sh.
 
 **Step Four** is to install anaconda3 and upgrade pip.
 
@@ -20,8 +20,6 @@
 
 **Step Nine** is to install exa and peco.
 
-**Step Ten** is to install homebrew and brew install ghq (plus config ghq.root).
+**Step Ten** is to config vim and install plugins.
 
-**Step Eleven** is to config vim and install plugins.
-
-**Step Twelve** is to setup my kde desktop if on Kubuntu.
+**Step Eleven** is to setup my kde desktop if on Kubuntu.
