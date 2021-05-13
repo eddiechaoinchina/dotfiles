@@ -18,7 +18,7 @@
 
 **Step Eight** is to install one of those nice-looking nerd fonts.
 
-**Step Nine** is to install exa and peco.
+**Step Nine** is to install exa and peco, tig and commitizen and cz-conventional-changelog.
 
 **Step Ten** is to config vim and install plugins.
 
