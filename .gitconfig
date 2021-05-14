@@ -11,6 +11,7 @@
     ca = commit -a
     ci = commit
     co = checkout
+    df = "!git hist | peco | awk '{print $2}' | xargs -I {} git diff {}^ {}"
     st = status
     hist = log --pretty=format:\"%Cgreen%h %Creset%cd %Cblue[%cn] %Creset%s%C(yellow)%d%C(reset)\" --graph --date=relative --decorate --all
     llog = log --pretty=format:\"%C(red)%h %C(reset)(%cd) %C(green)%an %Creset%s %C(yellow)%d%Creset\" --graph --date=relative --name-status
