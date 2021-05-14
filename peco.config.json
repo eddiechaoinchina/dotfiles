@@ -1,0 +1,13 @@
+{
+    "Keymap": {
+        "ArrowLeft": "peco.BackwardChar",
+        "ArrowRight": "peco.ForwardChar",
+        "C-h": "peco.ScrollPageUp",
+        "C-j": "peco.SelectDown",
+        "C-k": "peco.SelectUp",
+        "C-l": "peco.ScrollPageDown",
+        "Tab": "peco.ToggleSelectionAndSelectNext"
+    },
+    "StickySelection": true,
+    "InitialFilter": "Fuzzy"
+}
