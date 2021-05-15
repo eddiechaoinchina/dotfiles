@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/15/21 15:10:33 +0800
+" Last Change: 05/15/21 15:36:29 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -1275,11 +1275,17 @@ endfu "}}}
 
 " Brief: Show the result of "gcc -o file file.c" in a split window.
 fu! s:ClangRunCurrentFile() "{{{
+    if &ft=='c'
+        let l:compile_cmd = 'gcc '
+    elseif &ft=='cpp'
+        let l:compile_cmd = 'g++ '
+    endif
+
     " Get file name for concatenating.
     let l:fname = substitute(bufname('%'), '\.\(c\|cpp\)$', '', '')
 
     " Compiling...
-    let l:compile_msg = system('gcc '.bufname('%').' -o '.l:fname)
+    let l:compile_msg = system(l:compile_cmd.'-o '.l:fname.' '.bufname('%'))
 
     " Grab error message if any.
     let l:error = split(l:compile_msg, '\n')
