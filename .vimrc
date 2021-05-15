@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/11/21 16:56:42 +0800
+" Last Change: 05/15/21 15:10:33 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -852,6 +852,9 @@ aug ft_fish
 
     " Use ";h" to add file header.
     au FileType fish nnoremap <buffer> <localleader>h ggO#!/usr/bin/env fish<cr> Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+
+    " Use ";r" to run without args.
+    au FileType fish nnoremap <buffer> <localleader>r :call <SID>FishRunCurrentFile()<cr>
 aug end
 
 " }}}
@@ -1036,12 +1039,15 @@ aug end
 aug ft_sh
     au!
 
-    au FileType sh,zsh setl softtabstop=2 shiftwidth=2
-    au FileType sh,zsh setl foldmethod=marker foldmarker={{{,}}}
-    au FileType sh,zsh setl formatoptions-=o
+    au FileType sh setl softtabstop=2 shiftwidth=2
+    au FileType sh setl foldmethod=marker foldmarker={{{,}}}
+    au FileType sh setl formatoptions-=o
 
     " Use ";h" to add file header.
-    au FileType sh,zsh nnoremap <buffer> <localleader>h ggO#!/usr/bin/env bash<cr># Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+    au FileType sh nnoremap <buffer> <localleader>h ggO#!/usr/bin/env bash<cr># Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
+
+    " Use ";r" to run without args.
+    au FileType sh nnoremap <buffer> <localleader>r :call <SID>BashRunCurrentFile()<cr>
 aug end
 
 " }}}
@@ -1203,7 +1209,7 @@ endfu "}}}
 
 " Brief: Quit if current window is the last one.
 fu! s:MyLastWindow() "{{{
-    if &ft=='jsresult' || &ft=='pythonresult' || &ft=='clangresult' || &ft=='javaresult'
+    if &ft=='jsresult' || &ft=='pythonresult' || &ft=='clangresult' || &ft=='javaresult' || &ft=='bashresult' || &ft=='fishresult'
         if winnr('$') == 1
             quit
         endif
@@ -1334,6 +1340,58 @@ fu! s:JavaRunCurrentFile() "{{{
     setl ft=javaresult
     setl bt=nofile
     call append(0, l:result)
+    exe bufwinnr('#') . 'wincmd w'
+endfu "}}}
+
+" Brief: Show the result of "bash file.sh" in a split window.
+fu! s:BashRunCurrentFile() "{{{
+    let l:shell_command = 'bash '
+
+    " Get the result of running.
+    let l:result = system(l:shell_command . bufname('%'))
+
+    " Create a new split, or switch to it if it exists.
+    if bufwinnr('__Bash_Result__') == -1
+        vsp __Bash_Result__
+    else
+        exe bufwinnr('__Bash_Result__') . 'wincmd w'
+    endif
+
+    " Clear the buffer, and set buffer type.
+    norm! ggdG
+    setl ft=bashresult
+    setl bt=nofile
+
+    " Show the result.
+    call append(0, split(l:result, '\m\n'))
+
+    " Switch back to the original window.
+    exe bufwinnr('#') . 'wincmd w'
+endfu "}}}
+
+" Brief: Show the result of "fish file.fish" in a split window.
+fu! s:FishRunCurrentFile() "{{{
+    let l:shell_command = 'fish '
+
+    " Get the result of running.
+    let l:result = system(l:shell_command . bufname('%'))
+
+    " Create a new split, or switch to it if it exists.
+    if bufwinnr('__Fish_Result__') == -1
+        vsp __Fish_Result__
+    else
+        exe bufwinnr('__Fish_Result__') . 'wincmd w'
+    endif
+
+    " Clear the buffer, and set buffer type.
+    norm! ggdG
+    setl ft=fishresult
+    setl bt=nofile
+
+    " Show the result.
+    call append(0, split(l:result, '\m\n'))
+
+    " Switch back to the original window.
     exe bufwinnr('#') . 'wincmd w'
 endfu "}}}
 
