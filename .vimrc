@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/15/21 15:36:29 +0800
+" Last Change: 05/17/21 18:32:15 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -59,7 +59,7 @@
 " Both "ctrlp" and "ack" defaults to the directory of current file.
 "
 " Be sure to install "clang-format", "prettier" via "npm", install "autopep8",
-" "pycodestyle" via "pip", install "html-tidy" via "choco" or "tidy" via "apt"
+" "pycodestyle" via "pip", install "tidy" via "apt", install "shfmt" via "brew"
 " to make "autoformat" work normally. "clang-format" requires ".clang-format"
 " file in the root directory.
 "
@@ -69,11 +69,13 @@
 " ----------------------------------------------
 " coc-clangd                      | .c,.cpp
 " coc-css                         | .css,.scss
+" coc-fish                        | .fish
 " coc-html                        | .html
 " coc-html-css-support            |
 " coc-java                        | .java
 " coc-json                        | .json,.jsonc
 " coc-pyright                     | .py
+" coc-sh                          | .sh
 " coc-tsserver                    | .js
 " coc-vetur                       | .vue
 " ----------------------------------------------
@@ -185,17 +187,20 @@ let g:ackprg = 'ag --smart-case --nogroup --nocolor --column'
 " Autoformat --------------- {{{
 
 let g:formatdef_prettier = "'prettier --stdin-filepath '.expand('%:p').(&textwidth ? ' --print-width '.&textwidth : '').' --tab-width '.shiftwidth().' --single-quote'"
+let g:formatdef_shfmt = "'shfmt -i '.(&expandtab ? shiftwidth() : '0').' -bn -ci -sr -kp'"
 
 let g:formatters_c          = ['clangformat']
 let g:formatters_cpp        = ['clangformat']
-let g:formatters_python     = ['autopep8']
-let g:formatters_html       = ['tidy_html']
-let g:formatters_markdown   = ['prettier']
-let g:formatters_javascript = ['prettier']
 let g:formatters_css        = ['prettier']
-let g:formatters_scss       = ['prettier']
-let g:formatters_less       = ['prettier']
+let g:formatters_fish       = ['fish_indent']
+let g:formatters_html       = ['tidy_html']
+let g:formatters_javascript = ['prettier']
 let g:formatters_json       = ['prettier']
+let g:formatters_less       = ['prettier']
+let g:formatters_markdown   = ['prettier']
+let g:formatters_python     = ['autopep8']
+let g:formatters_scss       = ['prettier']
+let g:formatters_sh         = ['shfmt']
 
 noremap <F3> :Autoformat<cr>
 inoremap <F3> <esc>:Autoformat<cr>
