@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/17/21 18:32:15 +0800
+" Last Change: 05/20/21 22:11:01 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -155,31 +155,10 @@ let g:context_commentstrings = {
 
 " Ack ---------------------- {{{
 
-" Ack motions {{{
-
-nnoremap <silent> <leader>A :set opfunc=<SID>AckMotion<cr>g@
-xnoremap <silent> <leader>A :<c-u>call <SID>AckMotion(visualmode())<cr>
-
-fu! s:AckMotion(type) abort
-    let reg_save = @"
-
-    if a:type ==# 'v'
-        silent exe 'norm! `<' . a:type . '`>y'
-    elseif a:type ==# 'char'
-        silent exe 'norm! `[v`]y'
-    endif
-
-    exe 'norm! :Ack! --literal ' . shellescape(@") . '\<cr>'
-
-    let @" = reg_save
-endfu
-
-" }}}
-
 " With a "bang", it will not jump to the first result automatically.
 nnoremap <leader>a :Ack!<space>
 
-" Use "ag" as searching tool, better install it first.
+" Use "ag" as default searching tool, you should install it first.
 let g:ackprg = 'ag --smart-case --nogroup --nocolor --column'
 
 " }}}
@@ -665,9 +644,6 @@ nnoremap <leader>bn :bn<cr>
 nnoremap <leader>bp :bp<cr>
 nnoremap <leader>bd :bp\|bd #<cr>
 nnoremap <leader>bb :ls<cr>:buffer<space>
-
-" Capitalize a word.
-nnoremap <c-u> mzgUiw`z
 
 " Enclose a word.
 nnoremap <leader>" mzviw<esc>a"<esc>bi"<esc>`z
