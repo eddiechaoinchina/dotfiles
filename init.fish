@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 05/14/21 19:46:15 +0800
+# Last Change: 05/22/2021 03:31:44 PM +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -33,7 +33,7 @@ if test -d $HOME/anaconda3 # Python
 end
 
 if type -q java # Java
-  set -x JAVA_HOME (readlink -f (which java))
+  set -x JAVA_HOME (readlink -f (which java) | sed "s:/jre/bin/java::")
 end
 
 if test -d /home/linuxbrew # Homebrew
