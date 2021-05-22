@@ -9,5 +9,5 @@
         "Tab": "peco.ToggleSelectionAndSelectNext"
     },
     "StickySelection": true,
-    "InitialFilter": "Fuzzy"
+    "InitialFilter": "SmartCase"
 }
