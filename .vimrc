@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/20/21 22:11:01 +0800
+" Last Change: 05/22/2021 11:03:47 PM +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -50,7 +50,8 @@
 " ----------------------------------------------
 "
 " Plugins above require a patched font for additional glyphs. I am currently
-" using "hack" nerd font.
+" using "Sauce Code Pro" nerd font. Unzip the folder and copy the files to
+" "/usr/local/share/fonts" on Linux.
 "
 " Be sure to install the "ack" package before using it. Better experienece to
 " have "ag" installed. Follow the instructions of installing "ack" and "ag"
