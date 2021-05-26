@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/26/21 21:12:32 +0800
+" Last Change: 05/27/21 07:36:54 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -30,12 +30,13 @@
 " ----------------------------------------------
 " ack           | faster searching       | ,a
 " autoformat    | formatting tool        | <f3>
-" coc.nvim      | conquer completion     |
+" coc.nvim      | conquer completion     | <f4>
 " commentary    | comment stuff out      | ;c
 " ctrl-p        | fuzzy file finder      | ,,
 " emmet         | html,css abbrevs       | <c-e>
 " fugitive      | git integration        |
 " gitgutter     | git diff sign          |
+" gundo         | vim undo tree          | <f5>
 " nerdtree      | tree file explorer     | <f2>
 " polyglot      | syntax highlighting    |
 " supertab      | insert completion      |
@@ -250,6 +251,14 @@ nnoremap <leader>gs :Git<cr>
 
 nnoremap <leader>gci :Git commit<cr>
 nnoremap <leader>gco :Git checkout<space>
+
+" }}}
+
+" Gundo -------------------- {{{
+
+nnoremap <F5> :GundoToggle<cr>
+
+let g:gundo_prefer_python3 = 1
 
 " }}}
 
