@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/22/2021 11:03:47 PM +0800
+" Last Change: 05/26/21 21:12:32 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -373,6 +373,7 @@ set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg " binary images
 set wildignore+=*.obj,*.exe,*.dll              " compiled object files
 set wildignore+=*.zip,*.rar,*.7z,*.tar.gz      " compressed files
 set wildignore+=*.deb,*.rpm,*.pkg              " package files
+set wildignore+=*.spl                          " compiled spelling word lists
 set wildignore+=*.sw?                          " swap files
 set wildignore+=*.DS_Store                     " mac bullshit
 
@@ -417,6 +418,8 @@ set scrolloff=3
 set sidescroll=1
 set sidescrolloff=10
 set updatetime=100
+set dictionary=/usr/share/dict/words
+set spellfile=~/.vim/custom-dictionary.utf-8.add
 
 " }}}
 
@@ -625,12 +628,11 @@ nnoremap <leader>ss :so %<cr>
 
 nnoremap <silent> <leader>sv :so $MYVIMRC<cr>:noh<cr>
 
-nnoremap <leader>eb :vsp ~/.bashrc<cr>
-nnoremap <leader>ec :vsp<cr>:CocConfig<cr>
+nnoremap <leader>ed :vsp ~/.vim/custom-dictionary.utf-8.add<cr>
 nnoremap <leader>ef :vsp $OMF_CONFIG/init.fish<cr>
+nnoremap <leader>eg :vsp ~/.gitconfig<cr>
 nnoremap <leader>et :vsp ~/.tmux.conf<cr>
 nnoremap <leader>ev :vsp $MYVIMRC<cr>
-nnoremap <leader>ez :vsp ~/.zshrc<cr>
 
 " }}}
 
@@ -695,6 +697,9 @@ inoremap { {}<left>
 
 " Filename completion.
 inoremap <c-f> <c-x><c-f>
+
+" Dict completion.
+inoremap <c-a> <c-x><c-k>
 
 " Move current line to the middle of the window.
 inoremap <c-n> 1<esc>zza<bs>
