@@ -4,7 +4,7 @@
 
 **Step Two** is to install necessary packages (apt remove vim first).
 
-> git curl gcc net-tools ack-grep silversearcher-ag nodejs npm fzf fish tmux vim-gtk openjdk-8-jdk peco
+> git curl gcc net-tools ack-grep silversearcher-ag nodejs npm fzf fish tmux vim-gtk openjdk-8-jdk peco wamerican
 
 **Step Three** is to config git, install homebrew and brew install ghq (plus config ghq.root), then ghq get this repo and run setup.sh.
 
