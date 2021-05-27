@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/27/21 12:42:25 +0800
+" Last Change: 05/27/21 13:59:08 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -497,6 +497,16 @@ aug ft_python_abbrev
     au FileType python inorea <buffer> fj for j in range(%):<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType python inorea <buffer> ww while % :<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType python inorea <buffer> fu def %():<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+aug end
+
+" }}}
+
+" Sh {{{
+
+aug ft_sh_abbrev
+    au!
+    au FileType sh inorea <buffer> if if [ % ]; then<cr><cr>fi<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType sh inorea <buffer> ff for % in ; do<cr><cr>done<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
