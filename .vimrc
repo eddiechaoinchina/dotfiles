@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/27/21 07:36:54 +0800
+" Last Change: 05/27/21 12:33:58 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -281,6 +281,18 @@ let g:NERDTreePatternMatchHighlightFullName  = 1
 " Polyglot ----------------- {{{
 
 let g:polyglot_disabled = ['autoindent']
+
+" }}}
+
+" RainbowBrackets ---------- {{{
+
+let g:rainbow#max_level = 16
+let g:rainbow#pairs     = [['(', ')'], ['[', ']'], ['{', '}']]
+
+aug rainbow
+    au!
+    au FileType * RainbowParentheses
+aug end
 
 " }}}
 
