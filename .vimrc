@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/27/21 12:36:37 +0800
+" Last Change: 05/27/21 12:42:25 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -39,6 +39,7 @@
 " gundo         | vim undo tree          | <f5>
 " nerdtree      | tree file explorer     | <f2>
 " polyglot      | syntax highlighting    |
+" rainbow       | rainbow parentheses    |
 " supertab      | insert completion      |
 " tabular       | align things           | ;a
 " ----------------------------------------------
