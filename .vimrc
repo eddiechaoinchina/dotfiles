@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/27/21 12:33:58 +0800
+" Last Change: 05/27/21 12:36:37 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -1778,8 +1778,8 @@ aug cline
     au!
 
     " Only show cursorline in current window and in normal mode.
-    " au WinLeave,InsertEnter * set nocursorline
-    " au WinEnter,InsertLeave * set cursorline
+    au WinLeave,InsertEnter * set nocursorline
+    au WinEnter,InsertLeave * set cursorline
 aug end
 
 " }}}
