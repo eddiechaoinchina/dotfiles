@@ -20,6 +20,6 @@
 
 **Step Nine** is to brew install exa and tig, npm install commitizen and cz-conventional-changelog (follow the three lines on their page to make it global).
 
-**Step Ten** is to config vim and install plugins.
+**Step Ten** is to config vim and install plugins with vimup.sh.
 
 **Step Eleven** is to setup my kde desktop if on Kubuntu.
