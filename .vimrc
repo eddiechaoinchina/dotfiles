@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/27/21 13:59:08 +0800
+" Last Change: 05/29/21 15:50:16 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -480,7 +480,7 @@ aug ft_javascript_abbrev
     au FileType javascript inorea <buffer> fb function (%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> fc (%) => {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> fd (function () {<cr><cr>})();<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr>'use strict';<cr><cr><c-r>=EatNextWhiteChar()<cr>
-    au FileType javascript inorea <buffer> fe forEach(function(%) {<cr><cr>});<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType javascript inorea <buffer> fe forEach(function (%) {<cr><cr>});<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType javascript inorea <buffer> lg console.log(%);<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 aug end
 
