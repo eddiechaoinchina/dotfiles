@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 05/29/21 15:50:16 +0800
+" Last Change: 06/02/21 20:34:40 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -461,9 +461,20 @@ aug ft_c_abbrev
     au FileType c,cpp inorea <buffer> fi for (int i = 0; i < %; ++i) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> fj for (int j = 0; j < %; ++j) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> ww while (%) {<cr><cr>}<up><c-r>=repeat(' ', indent(line('.')-1)+&shiftwidth)<cr><esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
-    au FileType c,cpp inorea <buffer> pf printf("%");<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+    au FileType c,cpp inorea <buffer> pf printf(%);<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> sf scanf("%");<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
     au FileType c,cpp inorea <buffer> fd /** Brief: %<cr><cr> Args: <cr><cr>Return: <cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
+aug end
+
+" }}}
+
+" Java {{{
+
+aug ft_java_abbrev
+    au!
+    au FileType java inorea <buffer> ii import
+    au FileType java inorea <buffer> mm public static void main(String[] args) {<cr><cr>}<up><tab><tab><c-r>=EatNextWhiteChar()<cr>
+    au FileType java inorea <buffer> pf System.out.println(%);<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 aug end
 
 " }}}
