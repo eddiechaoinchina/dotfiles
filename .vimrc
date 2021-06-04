@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 06/02/21 20:34:40 +0800
+" Last Change: 06/04/21 20:21:26 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -651,17 +651,19 @@ nnoremap <leader>V V`]
 " Indent/dedent/autoindent what you just pasted.
 nnoremap =- V`]=
 
-" Reformat line. I never use l as a macro register anyway.
-nnoremap ql gqq
-
 " }}}
 
 " Quick editing {{{
 
 nnoremap <leader>wq :wq<cr>
 nnoremap <leader>ww :w<cr>
-nnoremap <leader>qq :q<cr>
 nnoremap <leader>fq :q!<cr>
+
+nnoremap <leader>qq :q<cr>
+aug mydiff
+    au!
+    au FileType mydiff nnoremap <buffer> <leader>qq :bp\|bd #<cr>:q<cr>
+aug end
 
 nnoremap <leader>wa :wa<cr>
 nnoremap <leader>qa :qa<cr>
@@ -1624,23 +1626,7 @@ fu! s:DiffUnsavedChanges() "{{{
     syn match myDiffAfter  '^+.*$'
 endfu "}}}
 
-" Brief: Turn on highlight in diff window.
-fu! s:DiffHighlight() "{{{
-    if &ft=='mydiff'
-        hi myDiffBefore ctermfg=red
-        hi myDiffAfter  ctermfg=green
-    else
-        hi clear myDiffBefore
-        hi clear myDiffAfter
-    endif
-endfu "}}}
-
 command! -nargs=0 ShowDiff :silent! call <SID>DiffUnsavedChanges()<cr>
-
-aug mydiff
-    au!
-    au BufEnter * call <SID>DiffHighlight()
-aug end
 
 " }}}
 
