@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 06/04/21 20:21:26 +0800
+" Last Change: 06/05/21 18:25:29 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -886,7 +886,10 @@ aug ft_fish
     au FileType fish nnoremap <buffer> <localleader>h ggO#!/usr/bin/env fish<cr> Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 
     " Use ";r" to run without args.
-    au FileType fish nnoremap <buffer> <localleader>r :call <SID>FishRunCurrentFile()<cr>
+    au FileType fish nnoremap <buffer> <localleader>r :call <SID>FishRunCurrentFile(0)<cr>
+
+    " Use ";R" to run with args.
+    au FileType fish nnoremap <buffer> <localleader>R :call <SID>FishRunCurrentFile(1)<cr>
 aug end
 
 " }}}
@@ -1025,17 +1028,6 @@ aug end
 
 " }}}
 
-" Ps1 ---------------------- {{{
-
-aug ft_ps1
-    au!
-    au FileType ps1 setl softtabstop=2 shiftwidth=2
-    au FileType ps1 setl foldmethod=marker foldmarker={{{,}}}
-    au FileType ps1 setl formatoptions-=o
-aug end
-
-" }}}
-
 " Python ------------------- {{{
 
 aug ft_python
@@ -1052,7 +1044,10 @@ aug ft_python
     au FileType python nnoremap <buffer> <localleader>h ggO# Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 
     " Use ";r" to run without args.
-    au FileType python nnoremap <buffer> <localleader>r :call <SID>PythonRunCurrentFile()<cr>
+    au FileType python nnoremap <buffer> <localleader>r :call <SID>PythonRunCurrentFile(0)<cr>
+
+    " Use ";R" to run without args.
+    au FileType python nnoremap <buffer> <localleader>R :call <SID>PythonRunCurrentFile(1)<cr>
 aug end
 
 " }}}
@@ -1079,7 +1074,10 @@ aug ft_sh
     au FileType sh nnoremap <buffer> <localleader>h ggO#!/usr/bin/env bash<cr># Author: Will Chao <nerdzzh@gmail.com><cr>Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: <c-r>=EatNextWhiteChar()<cr>
 
     " Use ";r" to run without args.
-    au FileType sh nnoremap <buffer> <localleader>r :call <SID>BashRunCurrentFile()<cr>
+    au FileType sh nnoremap <buffer> <localleader>r :call <SID>BashRunCurrentFile(0)<cr>
+
+    " Use ";R" to run with args.
+    au FileType sh nnoremap <buffer> <localleader>R :call <SID>BashRunCurrentFile(1)<cr>
 aug end
 
 " }}}
@@ -1280,11 +1278,18 @@ fu! s:JavascriptRunCurrentFile() "{{{
 endfu "}}}
 
 " Brief: Show the result of "python file.py" in a split window.
-fu! s:PythonRunCurrentFile() "{{{
+fu! s:PythonRunCurrentFile(withArgs) "{{{
     let l:python_command = 'python '
 
+    " Get arguments with input. Like "Args: -lh -a Will"
+    if a:withArgs
+        let l:args = ' ' . input('Args: ')
+    else
+        let l:args = ''
+    endif
+
     " Get the result of running.
-    let l:result = system(l:python_command . bufname('%'))
+    let l:result = system(l:python_command . bufname('%') . l:args)
 
     " Create a new split, or switch to it if it exists.
     if bufwinnr('__Python_Result__') == -1
@@ -1382,11 +1387,18 @@ fu! s:JavaRunCurrentFile() "{{{
 endfu "}}}
 
 " Brief: Show the result of "bash file.sh" in a split window.
-fu! s:BashRunCurrentFile() "{{{
+fu! s:BashRunCurrentFile(withArgs) "{{{
     let l:shell_command = 'bash '
 
+    " Get arguments with input. Like "Args: -lh -a Will"
+    if a:withArgs
+        let l:args = ' ' . input('Args: ')
+    else
+        let l:args = ''
+    endif
+
     " Get the result of running.
-    let l:result = system(l:shell_command . bufname('%'))
+    let l:result = system(l:shell_command . bufname('%') . l:args)
 
     " Create a new split, or switch to it if it exists.
     if bufwinnr('__Bash_Result__') == -1
@@ -1408,11 +1420,18 @@ fu! s:BashRunCurrentFile() "{{{
 endfu "}}}
 
 " Brief: Show the result of "fish file.fish" in a split window.
-fu! s:FishRunCurrentFile() "{{{
+fu! s:FishRunCurrentFile(withArgs) "{{{
     let l:shell_command = 'fish '
 
+    " Get arguments with input. Like "Args: -lh -a Will"
+    if a:withArgs
+        let l:args = ' ' . input('Args: ')
+    else
+        let l:args = ''
+    endif
+
     " Get the result of running.
-    let l:result = system(l:shell_command . bufname('%'))
+    let l:result = system(l:shell_command . bufname('%') . l:args)
 
     " Create a new split, or switch to it if it exists.
     if bufwinnr('__Fish_Result__') == -1
