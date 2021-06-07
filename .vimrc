@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 06/05/21 18:25:29 +0800
+" Last Change: 06/07/21 12:28:31 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -479,7 +479,7 @@ aug end
 
 " }}}
 
-" Javascript {{{
+" JavaScript {{{
 
 aug ft_javascript_abbrev
     au!
@@ -937,7 +937,7 @@ aug end
 
 " }}}
 
-" Javascript --------------- {{{
+" JavaScript --------------- {{{
 
 aug ft_javascript
     au!
@@ -956,7 +956,7 @@ aug ft_javascript
     au FileType javascript nnoremap <buffer> <localleader>h ggO/** Author: Will Chao <nerdzzh@gmail.com><cr> Filename: <c-r>=expand('%:p:t')<cr><cr>Last Change: <c-r>=strftime('%x %X %z')<cr><cr>Brief: %<cr><esc>a/<esc>:let _s=@/<cr>?%<cr>:let @/=_s<cr>:noh<cr>a<bs><c-r>=EatNextWhiteChar()<cr>
 
     " Use ";r" to run without args.
-    au FileType javascript nnoremap <buffer> <localleader>r :call <SID>JavascriptRunCurrentFile()<cr>
+    au FileType javascript nnoremap <buffer> <localleader>r :call <SID>JavaScriptRunCurrentFile()<cr>
 
     " Use ";s" to add semicolon to eol.
     au FileType javascript nnoremap <buffer> <localleader>s A;<esc>
@@ -1252,7 +1252,7 @@ aug last_window
 aug end
 
 " Brief: Show the result of "node file.js" in a split window.
-fu! s:JavascriptRunCurrentFile() "{{{
+fu! s:JavaScriptRunCurrentFile() "{{{
     let l:js_command = 'node '
 
     " Get the result of running.
