@@ -1,19 +1,31 @@
 [user]
-	name = eddiechaoinchina
-	email = eddiechaoinchina@gmail.com
+    name = eddiechaoinchina
+    email = eddiechaoinchina@gmail.com
 [ghq]
-	root = ~/.ghq
+    root = ~/.ghq
 [alias]
     a = "!git status --short | peco | awk '{print $2}' | xargs git add"
     d = diff
+
     ba = branch -a
+    bm = branch --merged
+    bn = branch --no-merged
     br = branch
     ca = commit -a
     ci = commit
     co = checkout
     df = "!git hist | peco | awk '{print $2}' | xargs -I {} git diff {}^ {}"
-    st = status
-    ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
     pl = "!git pull origin $(git rev-parse --abbrev-ref HEAD)"
+    ps = "!git push origin $(git rev-parse --abbrev-ref HEAD)"
+    st = status
+
+    find = "!f() { git log --pretty=format:\"%h %cd [%cn] %s%d\" --date=relative -S'pretty' -S\"$@\" | peco | awk '{print $1}' | xargs -I {} git diff {}^ {}; }; f"
     hist = log --pretty=format:\"%Cgreen%h %Creset%cd %Cblue[%cn] %Creset%s%C(yellow)%d%C(reset)\" --graph --date=relative --decorate --all
     llog = log --pretty=format:\"%C(red)%h %C(reset)(%cd) %C(green)%an %Creset%s %C(yellow)%d%Creset\" --graph --date=relative --name-status
+    type = cat-file -t
+    dump = cat-file -p
+
+    # edit conflicted file on merge
+    edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u; }; vim `f`"
+    # add conflicted file on merge
+    add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u; }; git add `f`"
