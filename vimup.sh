@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: vimup.sh
-# Last Change: 05/27/2021 06:37:53 PM +0800
+# Last Change: 07/07/21 19:23:27 +0800
 # Brief: Set up vim dirs and files.
 
 # step one: make directory
@@ -37,6 +37,10 @@ fi
 if [ ! -d "$HOME/.vim/bundle/emmet-vim" ]; then
   git clone https://github.com/mattn/emmet-vim $HOME/.vim/bundle/emmet-vim
 fi
+# gruvbox
+if [ ! -d "$HOME/.vim/bundle/gruvbox" ]; then
+  git clone https://github.com/morhetz/gruvbox $HOME/.vim/bundle/gruvbox
+fi
 # gundo.vim
 if [ ! -d "$HOME/.vim/bundle/gundo.vim" ]; then
   git clone https://github.com/sjl/gundo.vim $HOME/.vim/bundle/gundo.vim
@@ -60,6 +64,10 @@ fi
 # tabular
 if [ ! -d "$HOME/.vim/bundle/tabular" ]; then
   git clone https://github.com/godlygeek/tabular $HOME/.vim/bundle/tabular
+fi
+# vim-airline
+if [ ! -d "$HOME/.vim/bundle/vim-airline" ]; then
+  git clone https://github.com/vim-airline/vim-airline $HOME/.vim/bundle/vim-airline
 fi
 # vim-autoformat
 if [ ! -d "$HOME/.vim/bundle/vim-autoformat" ]; then

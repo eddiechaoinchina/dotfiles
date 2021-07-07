@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 06/13/21 21:39:18 +0800
+" Last Change: 07/07/21 19:28:06 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -29,6 +29,7 @@
 " Install "Pathogen" first. Bundles I use:
 " ----------------------------------------------
 " ack           | faster searching       | ,a
+" airline       | better statusline      |
 " autoformat    | formatting tool        | <f3>
 " coc.nvim      | conquer completion     | <f4>
 " commentary    | comment stuff out      | ;c
@@ -36,6 +37,7 @@
 " emmet         | html,css abbrevs       | <c-e>
 " fugitive      | git integration        |
 " gitgutter     | git diff sign          |
+" gruvbox       | colorscheme            |
 " gundo         | vim undo tree          | <f5>
 " nerdtree      | tree file explorer     | <f2>
 " polyglot      | syntax highlighting    |
@@ -155,6 +157,12 @@ let g:context_commentstrings = {
 " }}}
 
 " Plugin-related Settings ----------------------- {{{
+
+" Airline ------------------ {{{
+
+let g:airline#extensions#tabline#enabled = 1
+
+" }}}
 
 " Ack ---------------------- {{{
 
@@ -374,7 +382,11 @@ set statusline+=%{&ff}                         " file format
 set statusline+=%y                             " file type
 set statusline+=\ %<%F\                        " full path
 set statusline+=%1*%m%*                        " modified flag
-set statusline+=%2*%{FugitiveStatusline()}%*   " git branch
+
+if exists("*FugitiveStatusline")               " git branch
+    set statusline+=%2*%{FugitiveStatusline()}%*
+endif
+
 set statusline+=%=%5l                          " current line
 set statusline+=/%L                            " total lines
 set statusline+=%4v\                           " virtual column number
@@ -398,6 +410,16 @@ set wildignore+=*.deb,*.rpm,*.pkg              " package files
 set wildignore+=*.spl                          " compiled spelling word lists
 set wildignore+=*.sw?                          " swap files
 set wildignore+=*.DS_Store                     " mac bullshit
+
+" }}}
+
+" Colorscheme -------------- {{{
+
+colorscheme gruvbox
+set bg=dark
+
+" Highlight VCS conflick markers
+match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " }}}
 
@@ -690,10 +712,8 @@ nnoremap <up>    <nop>
 nnoremap <down>  <nop>
 
 " Buffer mappings
-nnoremap <leader>bn :bn<cr>
-nnoremap <leader>bp :bp<cr>
+nnoremap <c-t> :bn<cr>
 nnoremap <leader>bd :bp\|bd #<cr>
-nnoremap <leader>bb :ls<cr>:buffer<space>
 
 " Enclose a word.
 nnoremap <leader>" mzviw<esc>a"<esc>bi"<esc>`z

@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 05/22/2021 03:31:44 PM +0800
+# Last Change: 07/07/21 18:01:56 +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -69,3 +69,6 @@ if type -q git
 end
 
 # }}}
+
+# Disable cursor blinking in WSL2 shell-wise
+echo -e -n "\e[2 q"
