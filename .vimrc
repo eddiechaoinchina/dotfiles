@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 07/07/21 19:28:06 +0800
+" Last Change: 07/15/21 18:06:05 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -36,6 +36,8 @@
 " ctrl-p        | fuzzy file finder      | ,,
 " emmet         | html,css abbrevs       | <c-e>
 " fugitive      | git integration        |
+" fzf           | fuzzy finder engine    |
+" fzf-preview   | fuzzy finder preview   | ;z
 " gitgutter     | git diff sign          |
 " gruvbox       | colorscheme            |
 " gundo         | vim undo tree          | <f5>
@@ -237,13 +239,13 @@ let g:ctrlp_switch_buffer     = 0
 
 " Emmet -------------------- {{{
 
-au FileType html,css,javascript,vue imap <buffer> <c-e> <c-y>,
-au FileType html,css,javascript,vue imap <buffer> <c-s> <c-y>n
+au FileType html,css,javascript,vue,scss imap <buffer> <c-e> <c-y>,
+au FileType html,css,javascript,vue,scss imap <buffer> <c-s> <c-y>n
 
 let g:user_emmet_mode           = 'i'
 let g:user_emmet_install_global = 0
 
-au FileType html,css,javascript,vue if exists(':EmmetInstall') | exe 'EmmetInstall' | endif
+au FileType html,css,javascript,vue,scss if exists(':EmmetInstall') | exe 'EmmetInstall' | endif
 
 " }}}
 
@@ -260,6 +262,17 @@ nnoremap <leader>gs :Git<cr>
 
 nnoremap <leader>gci :Git commit<cr>
 nnoremap <leader>gco :Git checkout<space>
+
+" }}}
+
+" FZF-Preview -------------- {{{
+
+" Adapt to FISH shell
+let g:fzf_preview_if_binary_command = 'string match "binary" (file --mime {})'
+let g:fzf_preview_command = 'bat --color=always --plain {-1}'
+let g:fzf_preview_use_dev_icons = 1
+
+nnoremap ;z :FzfPreviewAllBuffersRpc<cr>
 
 " }}}
 
@@ -587,7 +600,7 @@ iab teh  the
 iab tehn then
 
 iab <expr> hworld 'Hello World!'.EatNextWhiteChar()
-iab <expr> lhost 'http://127.0.0.1:'.EatNextWhiteChar()
+iab <expr> lhost 'http://localhost:'.EatNextWhiteChar()
 iab <expr> dts strftime('%x %X %z')
 
 " }}}
@@ -712,7 +725,8 @@ nnoremap <up>    <nop>
 nnoremap <down>  <nop>
 
 " Buffer mappings
-nnoremap <c-t> :bn<cr>
+nnoremap <c-f> :bn<cr>
+nnoremap <c-b> :bp<cr>
 nnoremap <leader>bd :bp\|bd #<cr>
 
 " Enclose a word.
@@ -736,7 +750,7 @@ nnoremap <silent> <leader><space> :noh<cr>:call clearmatches()<cr>
 nnoremap <silent> <leader>W mz:let _s=@/<cr>:%s/\s\+$//e<cr>:noh<cr>:let @/=_s<cr>`z
 
 " Open terminal window.
-nnoremap <leader>t :term<cr>
+nnoremap <leader>t :term ++rows=10<cr>
 
 " }}}
 

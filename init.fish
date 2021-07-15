@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 07/07/21 18:01:56 +0800
+# Last Change: 07/15/21 15:39:27 +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -28,12 +28,16 @@
 
 # Variables ------------------------------------- {{{
 
+# Default Editor
+set -g VISUAL vim
+set -g EDITOR $VISUAL
+
 if test -d $HOME/anaconda3 # Python
   set -x PATH $PATH $HOME/anaconda3/bin $HOME/.local/bin
 end
 
 if type -q java # Java
-  set -x JAVA_HOME (readlink -f (which java) | sed "s:/jre/bin/java::")
+  set -gx JAVA_HOME (readlink -f (which java) | sed "s:/jre/bin/java::")
 end
 
 if test -d /home/linuxbrew # Homebrew
@@ -42,7 +46,9 @@ end
 
 # Make FZF search including hidden files...
 if type -q fzf
-  set -x FZF_DEFAULT_COMMAND 'ag --hidden --ignore .git -g ""'
+  set -U FZF_FIND_FILE_COMMAND 'ag -l --hidden --ignore .git . $dir 2> /dev/null'
+  set -U FZF_PREVIEW_DIR_CMD 'exa --icons --long --group --links'
+  set -U FZF_PREVIEW_FILE_CMD 'bat'
 end
 
 # Terminal within VIM has a color problem...
@@ -66,6 +72,13 @@ end
 
 if type -q git
   alias g='git'
+end
+
+if type -q batcat
+  alias bat='batcat'
+  # BAT THEMES
+  set -U BAT_THEME 'gruvbox'
+  set -U FZF_PREVIEW_PREVIEW_BAT_THEME 'gruvbox'
 end
 
 # }}}
