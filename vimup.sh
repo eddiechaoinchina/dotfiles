@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: vimup.sh
-# Last Change: 07/15/21 17:52:07 +0800
+# Last Change: 07/16/21 13:36:01 +0800
 # Brief: Set up vim dirs and files.
 
 # step one: make directory
@@ -41,9 +41,9 @@ fi
 if [ ! -d "$HOME/.vim/bundle/fzf" ]; then
   git clone https://github.com/junegunn/fzf $HOME/.vim/bundle/fzf
 fi
-# fzf-preview.vim
-if [ ! -d "$HOME/.vim/bundle/fzf-preview.vim" ]; then
-  git clone -b release/rpc https://github.com/yuki-yano/fzf-preview.vim $HOME/.vim/bundle/fzf-preview.vim
+# fzf.vim
+if [ ! -d "$HOME/.vim/bundle/fzf.vim" ]; then
+  git clone https://github.com/junegunn/fzf.vim $HOME/.vim/bundle/fzf.vim
 fi
 # gruvbox
 if [ ! -d "$HOME/.vim/bundle/gruvbox" ]; then
