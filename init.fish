@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 07/15/21 15:39:27 +0800
+# Last Change: 07/16/21 11:45:17 +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -44,11 +44,19 @@ if test -d /home/linuxbrew # Homebrew
   eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 end
 
-# Make FZF search including hidden files...
 if type -q fzf
-  set -U FZF_FIND_FILE_COMMAND 'ag -l --hidden --ignore .git . $dir 2> /dev/null'
-  set -U FZF_PREVIEW_DIR_CMD 'exa --icons --long --group --links'
-  set -U FZF_PREVIEW_FILE_CMD 'bat'
+  # FZF with ag integration
+  if type -q ag
+    set -U FZF_FIND_FILE_COMMAND 'ag -l --hidden --ignore .git . $dir 2> /dev/null'
+  end
+  # FZF with exa integration
+  if type -q exa
+    set -U FZF_PREVIEW_DIR_CMD 'll'
+  end
+  # FZF with bat integration
+  if type -q batcat
+    set -U FZF_PREVIEW_FILE_CMD 'bat'
+  end
 end
 
 # Terminal within VIM has a color problem...
@@ -75,13 +83,7 @@ if type -q git
 end
 
 if type -q batcat
-  alias bat='batcat'
-  # BAT THEMES
-  set -U BAT_THEME 'gruvbox'
-  set -U FZF_PREVIEW_PREVIEW_BAT_THEME 'gruvbox'
+  alias bat='batcat --color=always --theme=gruvbox --style=plain'
 end
 
 # }}}
-
-# Disable cursor blinking in WSL2 shell-wise
-echo -e -n "\e[2 q"

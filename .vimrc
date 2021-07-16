@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 07/15/21 18:06:05 +0800
+" Last Change: 07/16/21 13:28:13 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -37,7 +37,7 @@
 " emmet         | html,css abbrevs       | <c-e>
 " fugitive      | git integration        |
 " fzf           | fuzzy finder engine    |
-" fzf-preview   | fuzzy finder preview   | ;z
+" fzf.vim       | fuzzy finder plugin    | ;b
 " gitgutter     | git diff sign          |
 " gruvbox       | colorscheme            |
 " gundo         | vim undo tree          | <f5>
@@ -265,14 +265,19 @@ nnoremap <leader>gco :Git checkout<space>
 
 " }}}
 
-" FZF-Preview -------------- {{{
+" FZF ---------------------- {{{
 
-" Adapt to FISH shell
-let g:fzf_preview_if_binary_command = 'string match "binary" (file --mime {})'
-let g:fzf_preview_command = 'bat --color=always --plain {-1}'
-let g:fzf_preview_use_dev_icons = 1
+" FUCK YOU, BAT
+let $BAT_THEME = 'gruvbox'
+let $BAT_STYLE = 'plain'
 
-nnoremap ;z :FzfPreviewAllBuffersRpc<cr>
+command! -bang -nargs=? -complete=dir Files
+            \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse']}), <bang>0)
+command! -bang -nargs=? -complete=buffer Buffers
+            \ call fzf#vim#buffers(<q-args>, fzf#vim#with_preview({'placeholder': '{1}', 'options': ['--layout=reverse']}), <bang>0)
+
+nnoremap ;z :Files<cr>
+nnoremap ;b :Buffers<cr>
 
 " }}}
 
