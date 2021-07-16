@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: setup.sh
-# Last Change: 07/16/21 19:23:33 +0800
+# Last Change: 07/16/21 19:26:22 +0800
 # Brief: Put dotfiles in their places.
 
 # Get the full path of current directory
@@ -62,4 +62,4 @@ echo "-------Setting up VIM---------------------------"
 echo "Please use vimup.sh for setting up vim environment"
 
 echo "-------Updating VIM plugins---------------------"
-echo "Please use vimup.sh for setting up vim environment"
+echo "Please use vimpluginupdate.sh for updateing vim plugins"
