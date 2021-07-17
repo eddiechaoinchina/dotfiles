@@ -1,6 +1,6 @@
 " Author: Will Chao <nerdzzh@gmail.com>
 " Filename: .vimrc
-" Last Change: 07/16/21 13:28:13 +0800
+" Last Change: 07/17/21 13:26:46 +0800
 " Brief: My .vimrc File
 
 " "Nighttime is the guardian of creativity."
@@ -228,6 +228,7 @@ xmap ;c <Plug>Commentary
 
 nnoremap <leader>. :CtrlPTag<cr>
 nnoremap <leader>E :CtrlP ../
+nnoremap <leader>/ :CtrlPBuffer<cr>
 
 let g:ctrlp_map               = '<leader>,'
 let g:ctrlp_cmd               = 'CtrlP'
@@ -302,6 +303,9 @@ aug end
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName    = 1
 let g:NERDTreePatternMatchHighlightFullName  = 1
+
+let g:NERDTreeDirArrowExpandable  = ""
+let g:NERDTreeDirArrowCollapsible = ""
 
 " }}}
 
@@ -458,7 +462,7 @@ set wrap
 set textwidth=80
 set colorcolumn=+1
 set list
-set listchars=tab:▸\ ,trail:⌴
+set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
 set complete=.,w,b,u,t
 set hlsearch
 set incsearch
@@ -1858,8 +1862,8 @@ aug trailing
     au!
 
     " Only shown when not in insert mode so I don't go insane.
-    au InsertEnter * :set listchars-=trail:⌴
-    au InsertLeave * :set listchars+=trail:⌴
+    au InsertEnter * :set listchars-=trail:·
+    au InsertLeave * :set listchars+=trail:·
 aug end
 
 " }}}

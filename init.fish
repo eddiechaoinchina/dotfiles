@@ -1,6 +1,6 @@
 # Author: Will Chao <nerdzzh@gmail.com>
 # Filename: init.fish
-# Last Change: 07/16/21 11:45:17 +0800
+# Last Change: 07/17/21 13:53:46 +0800
 # Brief: My init.fish File
 
 # Preamble -------------------------------------- {{{
@@ -57,6 +57,8 @@ if type -q fzf
   if type -q batcat
     set -U FZF_PREVIEW_FILE_CMD 'bat'
   end
+  # Override default options
+  set -U FZF_DEFAULT_OPTS '--height 40% --bind=ctrl-h:page-up,ctrl-l:page-down,ctrl-y:preview-up,ctrl-e:preview-down'
 end
 
 # Terminal within VIM has a color problem...
